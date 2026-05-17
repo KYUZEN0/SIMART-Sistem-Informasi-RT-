@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — SIMART</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #e94560;
+    --accent2: #f5a623;
+    --accent3: #3fb950;
+    --accent4: #58a6ff;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .logo-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .sidebar-logo .logo-title span { color: var(--accent); font-style: italic; }
+  .sidebar-logo .logo-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  .sidebar-nav { 
+    flex: 1; 
+    padding: 16px 12px; 
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 12px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+
+  .nav-item.active {
+    background: rgba(233,69,96,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(233,69,96,0.2);
+  }
+
+  .nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: var(--surface2);
+    margin-bottom: 10px;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), #c0392b);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .user-details .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .user-details .user-role { font-size: 11px; color: var(--muted); }
+
+  .logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(233,69,96,0.1);
+    border: 1px solid rgba(233,69,96,0.2);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { background: rgba(233,69,96,0.2); }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--text);
+  }
+
+  .topbar .date-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .content { padding: 32px; flex: 1; }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stat-card.blue::before { background: var(--accent4); }
+  .stat-card.red::before { background: var(--accent); }
+  .stat-card.green::before { background: var(--accent3); }
+  .stat-card.yellow::before { background: var(--accent2); }
+
+  .stat-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label { color: var(--muted); font-size: 13px; font-weight: 500; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #c0392b; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
+  .btn-success { background: var(--accent3); color: white; }
+  .btn-success:hover { background: #2ea043; }
+  .btn-warning { background: var(--accent2); color: white; }
+  .btn-warning:hover { background: #d4881d; }
+  .btn-danger { background: rgba(233,69,96,0.1); color: var(--accent); border: 1px solid rgba(233,69,96,0.3); }
+  .btn-danger:hover { background: rgba(233,69,96,0.2); }
+  .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--border); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* Status badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-pending { background: rgba(245,166,35,0.15); color: var(--accent2); border: 1px solid rgba(245,166,35,0.3); }
+  .badge-approved { background: rgba(63,185,80,0.15); color: var(--accent3); border: 1px solid rgba(63,185,80,0.3); }
+  .badge-rejected { background: rgba(233,69,96,0.15); color: var(--accent); border: 1px solid rgba(233,69,96,0.3); }
+  .badge-masuk { background: rgba(63,185,80,0.15); color: var(--accent3); border: 1px solid rgba(63,185,80,0.3); }
+  .badge-keluar { background: rgba(233,69,96,0.15); color: var(--accent); border: 1px solid rgba(233,69,96,0.3); }
+
+  /* Forms */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--accent4);
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.1);
+  }
+
+  .form-group select option { background: var(--surface2); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { background: var(--border); color: var(--text); }
+
+  .modal-body { padding: 24px 28px; }
+  .modal-footer {
+    padding: 16px 28px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* Kas summary */
+  .kas-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kas-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .kas-item .label { color: var(--muted); font-size: 12px; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+  .kas-item .value { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; }
+  .kas-item.masuk .value { color: var(--accent3); }
+  .kas-item.keluar .value { color: var(--accent); }
+  .kas-item.saldo .value { color: var(--accent4); }
+
+  /* Pengumuman cards */
+  .announcement-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .announcement-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .announcement-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--accent4), var(--accent));
+    border-radius: 4px 0 0 4px;
+  }
+
+  .announcement-item:hover { border-color: rgba(88,166,255,0.3); }
+
+  .announcement-item h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .announcement-item .ann-date { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .announcement-item .ann-body { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 14px; }
+  .announcement-item .ann-actions { display: flex; gap: 8px; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h4 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Dashboard recent */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--accent3);
+    color: var(--accent3);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .kas-summary { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">SI<span>MART</span></div>
+    <div class="logo-sub">Sistem Informasi Administrasi RT</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Menu Utama</div>
+    <button class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">🏠</span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('warga')">
+      <span class="nav-icon">👥</span> Data Warga
+    </button>
+    <button class="nav-item" onclick="showPage('surat')">
+      <span class="nav-icon">📄</span> Surat
+      <span class="nav-badge" id="suratBadge">0</span>
+    </button>
+
+    <div class="nav-section-label" style="margin-top:16px">Keuangan & Info</div>
+    <button class="nav-item" onclick="showPage('kas')">
+      <span class="nav-icon">💰</span> Kas RT
+    </button>
+    <button class="nav-item" onclick="showPage('pengumuman')">
+      <span class="nav-icon">📢</span> Pengumuman
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">👤</div>
+      <div class="user-details">
+        <div class="user-name" id="adminName">Admin RT</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Keluar</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">Dashboard Admin</h1>
+    <div class="date-badge" id="dateDisplay"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="statWarga">0</div>
+          <div class="stat-label">Total Warga</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">📄</div>
+          <div class="stat-value" id="statSurat">0</div>
+          <div class="stat-label">Total Surat</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value" id="statPending">0</div>
+          <div class="stat-label">Surat Pending</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value" id="statSaldo">0</div>
+          <div class="stat-label">Saldo Kas (Rp)</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <h3>📄 Surat Terbaru</h3>
+            <button class="btn btn-ghost btn-sm" onclick="showPage('surat')">Lihat Semua</button>
+          </div>
+          <div class="card-body" id="recentSurat"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>📢 Pengumuman Terbaru</h3>
+            <button class="btn btn-ghost btn-sm" onclick="showPage('pengumuman')">Lihat Semua</button>
+          </div>
+          <div class="card-body" id="recentAnn"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WARGA -->
+    <div class="page" id="page-warga">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <p style="color:var(--muted); font-size:14px;">Kelola data seluruh warga RT</p>
+        <button class="btn btn-primary" onclick="openModal('modalWarga')">+ Tambah Warga</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Daftar Warga</h3>
+          <input type="text" placeholder="Cari warga..." style="padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; outline:none; width:200px;" oninput="filterWarga(this.value)">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>NIK</th>
+                <th>Alamat</th>
+                <th>Telepon</th>
+                <th>Status</th>
+                <th>Username</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelWarga"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SURAT -->
+    <div class="page" id="page-surat">
+      <div style="margin-bottom:20px;">
+        <p style="color:var(--muted); font-size:14px;">Kelola pengajuan surat dari warga</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Data Surat</h3>
+          <select onchange="filterSurat(this.value)" style="padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; outline:none;">
+            <option value="all">Semua Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Disetujui</option>
+            <option value="rejected">Ditolak</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Warga</th>
+                <th>Jenis Surat</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelSurat"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- KAS -->
+    <div class="page" id="page-kas">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <p style="color:var(--muted); font-size:14px;">Catat pemasukan dan pengeluaran kas RT</p>
+        <button class="btn btn-primary" onclick="openModal('modalKas')">+ Tambah Kas</button>
+      </div>
+      <div class="kas-summary">
+        <div class="kas-item masuk">
+          <div class="label">Total Pemasukan</div>
+          <div class="value" id="totalMasuk">Rp 0</div>
+        </div>
+        <div class="kas-item keluar">
+          <div class="label">Total Pengeluaran</div>
+          <div class="value" id="totalKeluar">Rp 0</div>
+        </div>
+        <div class="kas-item saldo">
+          <div class="label">Saldo</div>
+          <div class="value" id="saldoKas">Rp 0</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Riwayat Transaksi Kas</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Keterangan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelKas"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENGUMUMAN -->
+    <div class="page" id="page-pengumuman">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <p style="color:var(--muted); font-size:14px;">Kelola pengumuman untuk warga</p>
+        <button class="btn btn-primary" onclick="openModal('modalPengumuman')">+ Tambah Pengumuman</button>
+      </div>
+      <div class="announcement-list" id="listPengumuman"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Modal Warga -->
+<div class="modal-overlay" id="modalWarga">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalWargaTitle">Tambah Warga</h3>
+      <button class="modal-close" onclick="closeModal('modalWarga')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="wargaId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="wNama" placeholder="Nama warga">
+        </div>
+        <div class="form-group">
+          <label>NIK</label>
+          <input type="text" id="wNik" placeholder="16 digit NIK">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Alamat</label>
+        <input type="text" id="wAlamat" placeholder="Alamat lengkap">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Telepon</label>
+          <input type="text" id="wTelepon" placeholder="No. HP">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="wStatus">
+            <option value="Tetap">Tetap</option>
+            <option value="Kontrak">Kontrak</option>
+            <option value="Kost">Kost</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Username Login</label>
+          <input type="text" id="wUsername" placeholder="Username warga">
+        </div>
+        <div class="form-group">
+          <label>Password Login</label>
+          <input type="text" id="wPassword" placeholder="Password">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalWarga')">Batal</button>
+      <button class="btn btn-primary" onclick="saveWarga()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Kas -->
+<div class="modal-overlay" id="modalKas">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Tambah Data Kas</h3>
+      <button class="modal-close" onclick="closeModal('modalKas')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input type="date" id="kTanggal">
+        </div>
+        <div class="form-group">
+          <label>Jenis</label>
+          <select id="kJenis">
+            <option value="masuk">Pemasukan</option>
+            <option value="keluar">Pengeluaran</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Jumlah (Rp)</label>
+        <input type="number" id="kJumlah" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Keterangan</label>
+        <textarea id="kKeterangan" placeholder="Keterangan transaksi..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalKas')">Batal</button>
+      <button class="btn btn-primary" onclick="saveKas()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pengumuman -->
+<div class="modal-overlay" id="modalPengumuman">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Tambah Pengumuman</h3>
+      <button class="modal-close" onclick="closeModal('modalPengumuman')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Judul</label>
+        <input type="text" id="pJudul" placeholder="Judul pengumuman">
+      </div>
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="pTanggal">
+      </div>
+      <div class="form-group">
+        <label>Isi Pengumuman</label>
+        <textarea id="pIsi" placeholder="Tulis pengumuman di sini..." style="min-height:120px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalPengumuman')">Batal</button>
+      <button class="btn btn-primary" onclick="savePengumuman()">📢 Publikasikan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lihat Surat -->
+<div class="modal-overlay" id="modalSuratDetail">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Detail Surat</h3>
+      <button class="modal-close" onclick="closeModal('modalSuratDetail')">✕</button>
+    </div>
+    <div class="modal-body" id="suratDetailContent"></div>
+    <div class="modal-footer" id="suratDetailActions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Auth check
+  const user = JSON.parse(sessionStorage.getItem('simart_user') || 'null');
+  if (!user || user.role !== 'admin') window.location.href = 'index.html';
+
+  document.getElementById('adminName').textContent = user?.nama || 'Admin';
+
+  // Date
+  const d = new Date();
+  document.getElementById('dateDisplay').textContent = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Set today date on forms
+  document.getElementById('kTanggal').value = d.toISOString().split('T')[0];
+  document.getElementById('pTanggal').value = d.toISOString().split('T')[0];
+
+  // Page navigation
+  const pageTitles = {
+    dashboard: 'Dashboard Admin',
+    warga: 'Data Warga',
+    surat: 'Surat',
+    kas: 'Kas RT',
+    pengumuman: 'Pengumuman'
+  };
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.textContent.trim().toLowerCase().includes(name === 'dashboard' ? 'dashboard' : name === 'warga' ? 'warga' : name === 'surat' ? 'surat' : name === 'kas' ? 'kas' : 'pengumuman')) {
+        n.classList.add('active');
+      }
+    });
+    document.getElementById('pageTitle').textContent = pageTitles[name];
+    renderPage(name);
+  }
+
+  function renderPage(name) {
+    if (name === 'dashboard') renderDashboard();
+    if (name === 'warga') renderWarga();
+    if (name === 'surat') renderSurat('all');
+    if (name === 'kas') renderKas();
+    if (name === 'pengumuman') renderPengumuman();
+  }
+
+  // Data helpers
+  const getWarga = () => JSON.parse(localStorage.getItem('simart_warga') || '[]');
+  const getSurat = () => JSON.parse(localStorage.getItem('simart_surat') || '[]');
+  const getKas = () => JSON.parse(localStorage.getItem('simart_kas') || '[]');
+  const getPengumuman = () => JSON.parse(localStorage.getItem('simart_pengumuman') || '[]');
+
+  const setWarga = d => localStorage.setItem('simart_warga', JSON.stringify(d));
+  const setSurat = d => localStorage.setItem('simart_surat', JSON.stringify(d));
+  const setKas = d => localStorage.setItem('simart_kas', JSON.stringify(d));
+  const setPengumuman = d => localStorage.setItem('simart_pengumuman', JSON.stringify(d));
+
+  const formatRp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
+
+  // Toast
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+    t.className = 'toast show' + (type === 'error' ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Modal
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // ======= DASHBOARD =======
+  function renderDashboard() {
+    const w = getWarga(), s = getSurat(), k = getKas();
+    const pending = s.filter(x => x.status === 'pending').length;
+    const saldo = k.reduce((a, x) => a + (x.jenis === 'masuk' ? +x.jumlah : -x.jumlah), 0);
+
+    document.getElementById('statWarga').textContent = w.length;
+    document.getElementById('statSurat').textContent = s.length;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statSaldo').textContent = saldo.toLocaleString('id-ID');
+    document.getElementById('suratBadge').textContent = pending;
+
+    // Recent surat
+    const rs = document.getElementById('recentSurat');
+    const recent = s.slice(-4).reverse();
+    if (!recent.length) {
+      rs.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Belum ada surat</p></div>';
+    } else {
+      rs.innerHTML = recent.map(s => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-size:14px; font-weight:600; color:var(--text);">${s.nama}</div>
+            <div style="font-size:12px; color:var(--muted);">${s.jenis} • ${s.tanggal}</div>
+          </div>
+          <span class="badge badge-${s.status}">${s.status}</span>
+        </div>
+      `).join('');
+    }
+
+    // Recent pengumuman
+    const ra = document.getElementById('recentAnn');
+    const ann = getPengumuman().slice(-3).reverse();
+    if (!ann.length) {
+      ra.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Belum ada pengumuman</p></div>';
+    } else {
+      ra.innerHTML = ann.map(a => `
+        <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+          <div style="font-size:14px; font-weight:700; color:var(--text);">${a.judul}</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:3px;">${a.tanggal}</div>
+          <div style="font-size:13px; color:var(--muted); margin-top:6px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.isi}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // ======= WARGA =======
+  let wargaFilter = '';
+
+  function filterWarga(v) {
+    wargaFilter = v.toLowerCase();
+    renderWarga();
+  }
+
+  function renderWarga() {
+    let data = getWarga();
+    if (wargaFilter) data = data.filter(w => w.nama.toLowerCase().includes(wargaFilter) || w.nik.includes(wargaFilter));
+
+    const tb = document.getElementById('tabelWarga');
+    if (!data.length) {
+      tb.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">👥</div><h4>Belum ada warga</h4><p>Tambahkan data warga terlebih dahulu</p></div></td></tr>`;
+      return;
+    }
+
+    tb.innerHTML = data.map((w, i) => `
+      <tr>
+        <td style="color:var(--muted)">${i + 1}</td>
+        <td><strong>${w.nama}</strong></td>
+        <td style="font-family:monospace; font-size:13px;">${w.nik}</td>
+        <td>${w.alamat}</td>
+        <td>${w.telepon}</td>
+        <td><span class="badge badge-approved">${w.status}</span></td>
+        <td style="font-family:monospace; font-size:13px;">${w.username}</td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="editWarga(${w.id})">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteWarga(${w.id})">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddWarga() {
+    document.getElementById('modalWargaTitle').textContent = 'Tambah Warga';
+    document.getElementById('wargaId').value = '';
+    ['wNama','wNik','wAlamat','wTelepon','wUsername','wPassword'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('wStatus').value = 'Tetap';
+    openModal('modalWarga');
+  }
+
+  function editWarga(id) {
+    const w = getWarga().find(x => x.id === id);
+    if (!w) return;
+    document.getElementById('modalWargaTitle').textContent = 'Edit Warga';
+    document.getElementById('wargaId').value = id;
+    document.getElementById('wNama').value = w.nama;
+    document.getElementById('wNik').value = w.nik;
+    document.getElementById('wAlamat').value = w.alamat;
+    document.getElementById('wTelepon').value = w.telepon;
+    document.getElementById('wStatus').value = w.status;
+    document.getElementById('wUsername').value = w.username;
+    document.getElementById('wPassword').value = w.password;
+    openModal('modalWarga');
+  }
+
+  function saveWarga() {
+    const nama = document.getElementById('wNama').value.trim();
+    const nik = document.getElementById('wNik').value.trim();
+    const alamat = document.getElementById('wAlamat').value.trim();
+    const telepon = document.getElementById('wTelepon').value.trim();
+    const status = document.getElementById('wStatus').value;
+    const username = document.getElementById('wUsername').value.trim();
+    const password = document.getElementById('wPassword').value.trim();
+
+    if (!nama || !nik || !username || !password) { showToast('Harap isi semua field wajib', 'error'); return; }
+
+    const data = getWarga();
+    const id = parseInt(document.getElementById('wargaId').value);
+
+    if (id) {
+      const idx = data.findIndex(x => x.id === id);
+      data[idx] = { ...data[idx], nama, nik, alamat, telepon, status, username, password };
+    } else {
+      const newId = data.length ? Math.max(...data.map(x => x.id)) + 1 : 1;
+      data.push({ id: newId, nama, nik, alamat, telepon, status, username, password });
+    }
+
+    setWarga(data);
+    closeModal('modalWarga');
+    renderWarga();
+    showToast(id ? 'Data warga diperbarui!' : 'Warga berhasil ditambahkan!');
+  }
+
+  function deleteWarga(id) {
+    if (!confirm('Hapus warga ini?')) return;
+    setWarga(getWarga().filter(x => x.id !== id));
+    renderWarga();
+    showToast('Warga dihapus', 'error');
+  }
+
+  // ======= SURAT =======
+  let suratFilter = 'all';
+
+  function filterSurat(v) { suratFilter = v; renderSurat(v); }
+
+  function renderSurat(filter) {
+    let data = getSurat();
+    if (filter !== 'all') data = data.filter(s => s.status === filter);
+
+    const tb = document.getElementById('tabelSurat');
+    if (!data.length) {
+      tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><h4>Tidak ada surat</h4></div></td></tr>`;
+      return;
+    }
+
+    tb.innerHTML = data.map((s, i) => `
+      <tr>
+        <td style="color:var(--muted)">${i + 1}</td>
+        <td><strong>${s.nama}</strong></td>
+        <td>${s.jenis}</td>
+        <td>${s.tanggal}</td>
+        <td><span class="badge badge-${s.status}">${s.status}</span></td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="lihatSurat(${s.id})">👁️ Detail</button>
+            ${s.status === 'pending' ? `
+              <button class="btn btn-success btn-sm" onclick="updateSurat(${s.id},'approved')">✅</button>
+              <button class="btn btn-danger btn-sm" onclick="updateSurat(${s.id},'rejected')">❌</button>
+            ` : ''}
+            ${s.status === 'approved' ? `<button class="btn btn-ghost btn-sm" onclick="cetakSurat(${s.id})">🖨️ Cetak</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    document.getElementById('suratBadge').textContent = getSurat().filter(x => x.status === 'pending').length;
+  }
+
+  function lihatSurat(id) {
+    const s = getSurat().find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('suratDetailContent').innerHTML = `
+      <div style="display:grid; gap:12px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div><div style="color:var(--muted); font-size:12px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Nama Warga</div><div style="font-weight:600;">${s.nama}</div></div>
+          <div><div style="color:var(--muted); font-size:12px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Jenis Surat</div><div style="font-weight:600;">${s.jenis}</div></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div><div style="color:var(--muted); font-size:12px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Tanggal</div><div>${s.tanggal}</div></div>
+          <div><div style="color:var(--muted); font-size:12px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Status</div><span class="badge badge-${s.status}">${s.status}</span></div>
+        </div>
+        ${s.keterangan ? `<div><div style="color:var(--muted); font-size:12px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Keterangan</div><div>${s.keterangan}</div></div>` : ''}
+      </div>
+    `;
+
+    const af = document.getElementById('suratDetailActions');
+    af.innerHTML = `<button class="btn btn-ghost" onclick="closeModal('modalSuratDetail')">Tutup</button>`;
+    if (s.status === 'pending') {
+      af.innerHTML += `
+        <button class="btn btn-success" onclick="updateSurat(${s.id},'approved'); closeModal('modalSuratDetail');">✅ Setujui</button>
+        <button class="btn btn-danger" onclick="updateSurat(${s.id},'rejected'); closeModal('modalSuratDetail');">❌ Tolak</button>
+      `;
+    }
+    if (s.status === 'approved') {
+      af.innerHTML += `<button class="btn btn-primary" onclick="cetakSurat(${s.id})">🖨️ Cetak Surat</button>`;
+    }
+
+    openModal('modalSuratDetail');
+  }
+
+  function updateSurat(id, status) {
+    const data = getSurat();
+    const idx = data.findIndex(x => x.id === id);
+    data[idx].status = status;
+    setSurat(data);
+    renderSurat(suratFilter);
+    showToast(status === 'approved' ? 'Surat disetujui!' : 'Surat ditolak');
+  }
+
+  function cetakSurat(id) {
+    const s = getSurat().find(x => x.id === id);
+    if (!s) return;
+    const wargaData = getWarga().find(w => w.id === s.warga_id) || {};
+    const tahun = new Date().getFullYear();
+    const nomorSurat = `${String(id).padStart(3,'0')}/GH-AYANA/${s.jenis.substring(0,3).toUpperCase()}/${tahun}`;
+    const tglFormatted = new Date(s.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html>
+<html><head><title>Surat Keterangan ${s.jenis}</title>
+<style>
+  @page { margin: 2cm 2.5cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; line-height: 1.5; }
+
+  .kop {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 8px;
+  }
+  .kop-info { font-size: 11pt; line-height: 1.8; }
+  .kop-info table { border-collapse: collapse; }
+  .kop-info td { padding: 0 4px 0 0; vertical-align: top; font-size: 11pt; }
+  .kop-info td:first-child { white-space: nowrap; }
+
+  .judul-surat {
+    text-align: center;
+    margin: 18px 0 4px;
+  }
+  .judul-surat h2 {
+    font-size: 13pt;
+    font-weight: bold;
+    text-decoration: underline;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .judul-surat .nomor {
+    font-size: 11pt;
+    margin-top: 4px;
+  }
+
+  .pembuka {
+    margin: 18px 0 14px;
+    text-align: justify;
+    font-size: 12pt;
+    line-height: 1.7;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 18px;
+  }
+  .data-table td {
+    padding: 3px 0;
+    font-size: 12pt;
+    vertical-align: top;
+  }
+  .data-table td:first-child {
+    width: 32px;
+    text-align: right;
+    padding-right: 8px;
+  }
+  .data-table td:nth-child(2) {
+    width: 200px;
+    padding-left: 4px;
+  }
+  .data-table td:nth-child(3) {
+    width: 16px;
+    text-align: center;
+  }
+  .data-table td:nth-child(4) {
+    padding-left: 8px;
+  }
+  .dotted { border-bottom: 1px dotted #333; min-width: 200px; display: inline-block; }
+
+  .penutup {
+    margin-top: 16px;
+    text-align: justify;
+    font-size: 12pt;
+    line-height: 1.7;
+  }
+
+  .ttd-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+  .ttd-block {
+    text-align: center;
+    min-width: 180px;
+  }
+  .ttd-block .jabatan { font-size: 12pt; margin-bottom: 60px; }
+  .ttd-block .nama { font-size: 12pt; font-weight: bold; text-decoration: underline; }
+
+  .tanggal-kanan {
+    text-align: right;
+    margin-top: 28px;
+    font-size: 12pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="kop">
+  <div class="kop-info">
+    <table>
+      <tr><td>RT/RW</td><td>:</td><td>07/04</td></tr>
+      <tr><td>Kelurahan</td><td>:</td><td>Pabuaran</td></tr>
+      <tr><td>Kecamatan</td><td>:</td><td>Cibinong</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="judul-surat">
+  <h2>Surat Keterangan ${s.jenis}</h2>
+  <div class="nomor">No. &nbsp; ${nomorSurat}</div>
+</div>
+
+<p class="pembuka">
+  Yang bertanda tangan dibawah ini Ketua RT 07 RW 04 Kelurahan Pabuaran, Kecamatan Cibinong, Kabupaten Bogor menerangkan bahwa ;
+</p>
+
+<table class="data-table">
+  <tr>
+    <td>1.</td>
+    <td>Nama Lengkap</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>2.</td>
+    <td>Jenis Kelamin</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>3.</td>
+    <td>Tempat, tanggal lahir</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>4.</td>
+    <td>Kewarganegaraan</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>5.</td>
+    <td>Agama</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>6.</td>
+    <td>Status perkawinan</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>7.</td>
+    <td>Pekerjaan</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>8.</td>
+    <td>Alamat KTP/KK</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>9.</td>
+    <td>Alamat saat ini</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+  <tr>
+    <td>10.</td>
+    <td>NIK</td>
+    <td>:</td>
+    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+  </tr>
+</table>
+
+<p class="penutup">
+  Demikian Surat Keterangan ${s.jenis} ini kami dibuat dengan sebenarnya agar dapat dipergunakan untuk keperluan ………………..
+</p>
+
+<div class="tanggal-kanan">Pabuaran, ${tglFormatted}</div>
+
+<div class="ttd-section">
+  <div class="ttd-block">
+    <div class="jabatan">Ketua RT 07</div>
+    <div class="nama">Rohim</div>
+  </div>
+  <div class="ttd-block">
+    <div class="jabatan">Ketua RW 04</div>
+    <div class="nama">Yusuf Hernawan</div>
+  </div>
+</div>
+
+</body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 400);
+  }
+
+  // ======= KAS =======
+  function renderKas() {
+    const data = getKas();
+    const masuk = data.filter(x => x.jenis === 'masuk').reduce((a, x) => a + +x.jumlah, 0);
+    const keluar = data.filter(x => x.jenis === 'keluar').reduce((a, x) => a + +x.jumlah, 0);
+    const saldo = masuk - keluar;
+
+    document.getElementById('totalMasuk').textContent = formatRp(masuk);
+    document.getElementById('totalKeluar').textContent = formatRp(keluar);
+    document.getElementById('saldoKas').textContent = formatRp(saldo);
+
+    const tb = document.getElementById('tabelKas');
+    if (!data.length) {
+      tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">💰</div><h4>Belum ada transaksi</h4></div></td></tr>`;
+      return;
+    }
+
+    tb.innerHTML = [...data].reverse().map((k, i) => `
+      <tr>
+        <td style="color:var(--muted)">${i + 1}</td>
+        <td>${k.tanggal}</td>
+        <td><span class="badge badge-${k.jenis}">${k.jenis === 'masuk' ? 'Pemasukan' : 'Pengeluaran'}</span></td>
+        <td style="font-weight:700; color:${k.jenis === 'masuk' ? 'var(--accent3)' : 'var(--accent)'}">
+          ${k.jenis === 'masuk' ? '+' : '-'}${formatRp(k.jumlah)}
+        </td>
+        <td>${k.keterangan}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteKas(${k.id})">🗑️</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function saveKas() {
+    const tanggal = document.getElementById('kTanggal').value;
+    const jenis = document.getElementById('kJenis').value;
+    const jumlah = document.getElementById('kJumlah').value;
+    const keterangan = document.getElementById('kKeterangan').value.trim();
+
+    if (!tanggal || !jumlah) { showToast('Harap isi tanggal dan jumlah', 'error'); return; }
+
+    const data = getKas();
+    const newId = data.length ? Math.max(...data.map(x => x.id)) + 1 : 1;
+    data.push({ id: newId, tanggal, jenis, jumlah: +jumlah, keterangan });
+    setKas(data);
+    closeModal('modalKas');
+    document.getElementById('kJumlah').value = '';
+    document.getElementById('kKeterangan').value = '';
+    renderKas();
+    showToast('Transaksi berhasil disimpan!');
+  }
+
+  function deleteKas(id) {
+    if (!confirm('Hapus transaksi ini?')) return;
+    setKas(getKas().filter(x => x.id !== id));
+    renderKas();
+    showToast('Transaksi dihapus', 'error');
+  }
+
+  // ======= PENGUMUMAN =======
+  function renderPengumuman() {
+    const data = getPengumuman().slice().reverse();
+    const el = document.getElementById('listPengumuman');
+
+    if (!data.length) {
+      el.innerHTML = `<div class="empty-state"><div class="icon">📢</div><h4>Belum ada pengumuman</h4><p>Tambahkan pengumuman untuk warga</p></div>`;
+      return;
+    }
+
+    el.innerHTML = data.map(p => `
+      <div class="announcement-item">
+        <h4>${p.judul}</h4>
+        <div class="ann-date">📅 ${p.tanggal}</div>
+        <div class="ann-body">${p.isi}</div>
+        <div class="ann-actions">
+          <button class="btn btn-danger btn-sm" onclick="deletePengumuman(${p.id})">🗑️ Hapus</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function savePengumuman() {
+    const judul = document.getElementById('pJudul').value.trim();
+    const tanggal = document.getElementById('pTanggal').value;
+    const isi = document.getElementById('pIsi').value.trim();
+
+    if (!judul || !tanggal || !isi) { showToast('Harap isi semua field', 'error'); return; }
+
+    const data = getPengumuman();
+    const newId = data.length ? Math.max(...data.map(x => x.id)) + 1 : 1;
+    data.push({ id: newId, judul, tanggal, isi });
+    setPengumuman(data);
+    closeModal('modalPengumuman');
+    document.getElementById('pJudul').value = '';
+    document.getElementById('pIsi').value = '';
+    renderPengumuman();
+    showToast('Pengumuman dipublikasikan!');
+  }
+
+  function deletePengumuman(id) {
+    if (!confirm('Hapus pengumuman ini?')) return;
+    setPengumuman(getPengumuman().filter(x => x.id !== id));
+    renderPengumuman();
+    showToast('Pengumuman dihapus', 'error');
+  }
+
+  function logout() {
+    if (confirm('Yakin ingin keluar?')) {
+      sessionStorage.removeItem('simart_user');
+      window.location.href = 'index.html';
+    }
+  }
+
+  // Init
+  renderDashboard();
+</script>
+</body>
+</html>
