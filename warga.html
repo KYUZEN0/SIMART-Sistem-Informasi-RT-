@@ -7,526 +7,227 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --surface2: #f8fafc;
-    --border: #e2e8f0;
-    --primary: #1a1a2e;
-    --accent: #0f3460;
-    --red: #e94560;
-    --green: #10b981;
-    --blue: #3b82f6;
-    --gold: #f59e0b;
-    --text: #1e293b;
-    --muted: #64748b;
-    --radius: 14px;
+    --bg:#f0f4f8;--surface:#ffffff;--surface2:#f8fafc;--border:#e2e8f0;
+    --primary:#1a1a2e;--accent:#0f3460;--red:#e94560;--green:#10b981;
+    --blue:#3b82f6;--gold:#f59e0b;--text:#1e293b;--muted:#64748b;--radius:14px;
   }
+  * { margin:0;padding:0;box-sizing:border-box; }
+  body { font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* Top nav */
+  /* TOP NAV */
   .topnav {
-    background: var(--primary);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    background:var(--primary);padding:0 24px;display:flex;align-items:center;
+    justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
   }
-
-  .nav-logo {
-    font-family: 'Fraunces', serif;
-    font-size: 24px;
-    color: white;
-  }
-
-  .nav-logo span { color: #e94560; font-style: italic; }
-
-  .nav-links {
-    display: flex;
-    gap: 4px;
-  }
-
+  .nav-logo { font-family:'Fraunces',serif;font-size:22px;color:white; }
+  .nav-logo span { color:#e94560;font-style:italic; }
+  .nav-links { display:flex;gap:4px; }
   .nav-link {
-    padding: 8px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.6);
-    border: none;
-    background: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: all 0.2s;
+    padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;
+    color:rgba(255,255,255,0.6);border:none;background:none;
+    font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;white-space:nowrap;
   }
-
-  .nav-link:hover { background: rgba(255,255,255,0.08); color: white; }
-  .nav-link.active { background: rgba(233,69,96,0.2); color: #e94560; }
-
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
+  .nav-link:hover{background:rgba(255,255,255,0.08);color:white;}
+  .nav-link.active{background:rgba(233,69,96,0.2);color:#e94560;}
+  .nav-right { display:flex;align-items:center;gap:10px; }
   .user-pill {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 6px 14px 6px 6px;
-    border-radius: 100px;
+    display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1);padding:5px 12px 5px 5px;border-radius:100px;
   }
+  .user-pill .avatar { width:30px;height:30px;background:linear-gradient(135deg,#e94560,#c0392b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px; }
+  .user-pill .uname { font-size:13px;color:white;font-weight:500;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .logout-btn { padding:7px 12px;background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);border-radius:10px;color:#e94560;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+  .logout-btn:hover{background:rgba(233,69,96,0.25);}
 
-  .user-pill .avatar {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #e94560, #c0392b);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+  /* BOTTOM NAV (mobile) */
+  .bottom-nav {
+    display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--primary);border-top:1px solid rgba(255,255,255,0.08);
+    padding:8px 0 max(8px, env(safe-area-inset-bottom));
+    box-shadow:0 -4px 20px rgba(0,0,0,0.2);
   }
-
-  .user-pill .uname { font-size: 13px; color: white; font-weight: 500; }
-
-  .logout-btn {
-    padding: 7px 14px;
-    background: rgba(233,69,96,0.15);
-    border: 1px solid rgba(233,69,96,0.3);
-    border-radius: 10px;
-    color: #e94560;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+  .bottom-nav-inner { display:flex;justify-content:space-around; }
+  .bnav-btn {
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:6px 12px;border-radius:10px;cursor:pointer;font-size:10px;font-weight:600;
+    color:rgba(255,255,255,0.5);border:none;background:none;
+    font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;
+    text-transform:uppercase;letter-spacing:0.04em;min-width:56px;
   }
+  .bnav-btn .bicon { font-size:20px;line-height:1; }
+  .bnav-btn.active { color:#e94560; }
+  .bnav-btn.active .bicon { transform:scale(1.1); }
 
-  .logout-btn:hover { background: rgba(233,69,96,0.25); }
+  /* MAIN */
+  .main { max-width:1100px;margin:0 auto;padding:24px 20px; }
+  .page { display:none; }
+  .page.active { display:block; }
 
-  /* Main */
-  .main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 24px;
-  }
-
-  /* Pages */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Welcome */
+  /* WELCOME BANNER */
   .welcome-banner {
-    background: linear-gradient(135deg, var(--primary) 0%, #0f3460 100%);
-    border-radius: 20px;
-    padding: 36px 40px;
-    color: white;
-    margin-bottom: 28px;
-    position: relative;
-    overflow: hidden;
+    background:linear-gradient(135deg,var(--primary) 0%,#0f3460 100%);
+    border-radius:20px;padding:28px 32px;color:white;margin-bottom:24px;
+    position:relative;overflow:hidden;
   }
+  .welcome-banner::before { content:'';position:absolute;right:-50px;top:-50px;width:250px;height:250px;background:radial-gradient(circle,rgba(233,69,96,0.25),transparent);border-radius:50%; }
+  .welcome-banner::after { content:'🏘️';position:absolute;right:32px;bottom:-10px;font-size:80px;opacity:0.15; }
+  .welcome-banner .greeting { font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:6px; }
+  .welcome-banner h1 { font-family:'Fraunces',serif;font-size:28px;margin-bottom:6px; }
+  .welcome-banner p { color:rgba(255,255,255,0.6);font-size:13px; }
 
-  .welcome-banner::before {
-    content: '';
-    position: absolute;
-    right: -50px; top: -50px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(233,69,96,0.2), transparent);
-    border-radius: 50%;
-  }
-
-  .welcome-banner::after {
-    content: '🏘️';
-    position: absolute;
-    right: 40px; bottom: -10px;
-    font-size: 100px;
-    opacity: 0.15;
-  }
-
-  .welcome-banner .greeting { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
-  .welcome-banner h1 { font-family: 'Fraunces', serif; font-size: 32px; margin-bottom: 8px; }
-  .welcome-banner p { color: rgba(255,255,255,0.6); font-size: 14px; }
-
-  /* Quick stats */
-  .quick-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-
+  /* QUICK STATS */
+  .quick-stats { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px; }
   .qs-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px;display:flex;align-items:center;gap:14px;
+    transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;
   }
+  .qs-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+  .qs-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .qs-icon.blue{background:rgba(59,130,246,0.1);}
+  .qs-icon.green{background:rgba(16,185,129,0.1);}
+  .qs-icon.gold{background:rgba(245,158,11,0.1);}
+  .qs-val{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);}
+  .qs-label{font-size:12px;color:var(--muted);margin-top:2px;}
 
-  .qs-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+  /* CARDS */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+  .card-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .card-header h3{font-size:16px;font-weight:700;color:var(--text);}
+  .card-body{padding:22px;}
 
-  .qs-icon {
-    width: 48px; height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
+  /* BUTTONS */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;}
+  .btn-primary{background:var(--accent);color:white;}
+  .btn-primary:hover{background:#0a2a4a;box-shadow:0 4px 15px rgba(15,52,96,0.3);}
+  .btn-danger{background:rgba(233,69,96,0.08);color:var(--red);border:1px solid rgba(233,69,96,0.2);}
+  .btn-danger:hover{background:rgba(233,69,96,0.15);}
+  .btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+  .btn-ghost:hover{background:var(--border);}
+  .btn-success{background:var(--green);color:white;}
+  .btn-success:hover{background:#059669;}
+  .btn-sm{padding:5px 11px;font-size:12px;border-radius:8px;}
+  .btn-full{width:100%;justify-content:center;}
 
-  .qs-icon.blue { background: rgba(59,130,246,0.1); }
-  .qs-icon.green { background: rgba(16,185,129,0.1); }
-  .qs-icon.gold { background: rgba(245,158,11,0.1); }
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+  .badge-pending{background:rgba(245,158,11,0.12);color:var(--gold);border:1px solid rgba(245,158,11,0.3);}
+  .badge-approved{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.3);}
+  .badge-rejected{background:rgba(233,69,96,0.12);color:var(--red);border:1px solid rgba(233,69,96,0.2);}
 
-  .qs-info .qs-val { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--text); }
-  .qs-info .qs-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  /* TABLE */
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  thead th{background:var(--surface2);padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+  tbody td{padding:13px 16px;border-bottom:1px solid rgba(226,232,240,0.7);color:var(--text);vertical-align:middle;}
+  tbody tr:hover{background:var(--surface2);}
+  tbody tr:last-child td{border-bottom:none;}
 
-  /* Card */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
+  /* PAGE HEADER */
+  .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+  .page-header h2{font-family:'Fraunces',serif;font-size:26px;}
+  .page-header p{color:var(--muted);font-size:13px;margin-top:4px;}
 
-  .card-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  /* PENGUMUMAN */
+  .ann-grid{display:flex;flex-direction:column;gap:14px;}
+  .ann-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;position:relative;padding-left:26px;transition:all 0.2s;}
+  .ann-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--blue),var(--accent));border-radius:4px 0 0 4px;}
+  .ann-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.06);border-color:rgba(59,130,246,0.3);}
+  .ann-card h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .ann-card .ann-date{font-size:12px;color:var(--muted);margin-bottom:9px;}
+  .ann-card .ann-body{font-size:14px;color:var(--muted);line-height:1.7;}
 
-  .card-header h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-  }
+  /* KAS */
+  .kas-public{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px;}
+  .kas-pub-item{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+  .kas-pub-item .label{color:var(--muted);font-size:11px;margin-bottom:6px;text-transform:uppercase;font-weight:600;letter-spacing:0.05em;}
+  .kas-pub-item .value{font-family:'Fraunces',serif;font-size:18px;font-weight:700;}
+  .kas-pub-item.masuk .value{color:var(--green);}
+  .kas-pub-item.keluar .value{color:var(--red);}
+  .kas-pub-item.saldo .value{color:var(--blue);}
 
-  .card-body { padding: 24px; }
+  /* PROFILE */
+  .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+  .profile-header{background:linear-gradient(135deg,var(--primary),var(--accent));padding:28px;text-align:center;color:white;}
+  .profile-avatar{width:76px;height:76px;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;}
+  .profile-name{font-family:'Fraunces',serif;font-size:22px;margin-bottom:4px;}
+  .profile-role{font-size:12px;opacity:0.7;}
+  .profile-info{padding:24px;}
+  .info-row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .info-row:last-child{border-bottom:none;}
+  .info-icon{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .info-label{font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;}
+  .info-value{font-size:15px;color:var(--text);font-weight:500;}
 
-  /* Buttons */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 18px;
-    border-radius: 10px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-  }
+  /* EDIT PROFILE FORM */
+  .edit-profile-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;display:none;}
+  .edit-profile-form.show{display:block;}
+  .edit-form-title{font-family:'Fraunces',serif;font-size:20px;margin-bottom:18px;color:var(--text);}
+  .form-group{margin-bottom:14px;}
+  .form-group label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.04em;}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:all 0.2s;}
+  .form-group input:focus,.form-group select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);background:white;}
+  .form-group input:disabled{opacity:0.6;cursor:not-allowed;background:var(--bg);}
+  .form-group .field-note{font-size:11px;color:var(--muted);margin-top:5px;}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .profile-actions{display:flex;gap:10px;flex-wrap:wrap;}
 
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-primary:hover { background: #0a2a4a; box-shadow: 0 4px 15px rgba(15,52,96,0.3); }
-  .btn-danger { background: rgba(233,69,96,0.08); color: var(--red); border: 1px solid rgba(233,69,96,0.2); }
-  .btn-danger:hover { background: rgba(233,69,96,0.15); }
-  .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-ghost:hover { background: var(--border); }
-  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);}
+  .modal-header{padding:22px 26px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .modal-header h3{font-family:'Fraunces',serif;font-size:22px;color:var(--text);}
+  .modal-close{background:var(--surface2);border:1px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+  .modal-close:hover{background:var(--border);color:var(--text);}
+  .modal-body{padding:22px 26px;}
+  .modal-footer{padding:14px 26px 22px;display:flex;gap:10px;justify-content:flex-end;}
 
-  /* Badges */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 10px;
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 700;
-  }
+  /* EMPTY */
+  .empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+  .empty-state .icon{font-size:48px;margin-bottom:12px;}
+  .empty-state h4{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;}
+  .empty-state p{font-size:14px;}
 
-  .badge-pending { background: rgba(245,158,11,0.12); color: var(--gold); border: 1px solid rgba(245,158,11,0.3); }
-  .badge-approved { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
-  .badge-rejected { background: rgba(233,69,96,0.12); color: var(--red); border: 1px solid rgba(233,69,96,0.2); }
+  /* TOAST */
+  .toast{position:fixed;background:white;border:2px solid var(--green);color:var(--green);padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 25px rgba(0,0,0,0.12);transform:translateY(100px);opacity:0;transition:all 0.3s ease;}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.error{border-color:var(--red);color:var(--red);}
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-
-  thead th {
-    background: var(--surface2);
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-
-  tbody td {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(226,232,240,0.7);
-    color: var(--text);
-    vertical-align: middle;
-  }
-
-  tbody tr:hover { background: var(--surface2); }
-  tbody tr:last-child td { border-bottom: none; }
-
-  /* Pengumuman */
-  .ann-grid { display: flex; flex-direction: column; gap: 16px; }
-
-  .ann-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    position: relative;
-    padding-left: 28px;
-    transition: all 0.2s;
-  }
-
-  .ann-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: linear-gradient(180deg, var(--blue), var(--accent));
-    border-radius: 4px 0 0 4px;
-  }
-
-  .ann-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    border-color: rgba(59,130,246,0.3);
-  }
-
-  .ann-card h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .ann-card .ann-date { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-  .ann-card .ann-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-  /* Profile */
-  .profile-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .profile-header {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    padding: 32px;
-    text-align: center;
-    color: white;
-  }
-
-  .profile-avatar {
-    width: 80px;
-    height: 80px;
-    background: rgba(255,255,255,0.2);
-    border: 3px solid rgba(255,255,255,0.4);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    margin: 0 auto 16px;
-  }
-
-  .profile-name { font-family: 'Fraunces', serif; font-size: 24px; margin-bottom: 4px; }
-  .profile-role { font-size: 13px; opacity: 0.7; }
-
-  .profile-info { padding: 28px; }
-
-  .info-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .info-row:last-child { border-bottom: none; }
-
-  .info-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .info-label { font-size: 12px; color: var(--muted); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-  .info-value { font-size: 15px; color: var(--text); font-weight: 500; }
-
-  /* Form */
-  .form-group { margin-bottom: 16px; }
-
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 11px 14px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s;
-  }
-
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-    background: white;
-  }
-
-  .form-group textarea { resize: vertical; min-height: 90px; }
-
-  /* Modal */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    width: 90%;
-    max-width: 480px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-  }
-
-  .modal-header {
-    padding: 24px 28px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .modal-header h3 { font-family: 'Fraunces', serif; font-size: 22px; color: var(--text); }
-
-  .modal-close {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .modal-close:hover { background: var(--border); color: var(--text); }
-  .modal-body { padding: 24px 28px; }
-  .modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; }
-
-  /* Empty */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
-
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-state h4 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-  .empty-state p { font-size: 14px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: white;
-    border: 2px solid var(--green);
-    color: var(--green);
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 9999;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease;
-  }
-
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast.error { border-color: var(--red); color: var(--red); }
-
-  /* Kas public */
-  .kas-public {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .kas-pub-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    text-align: center;
-  }
-
-  .kas-pub-item .label { color: var(--muted); font-size: 12px; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
-  .kas-pub-item .value { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; }
-  .kas-pub-item.masuk .value { color: var(--green); }
-  .kas-pub-item.keluar .value { color: var(--red); }
-  .kas-pub-item.saldo .value { color: var(--blue); }
-
+  /* RESPONSIVE */
   @media (max-width: 768px) {
-    .quick-stats { grid-template-columns: 1fr; }
-    .kas-public { grid-template-columns: 1fr; }
     .nav-links { display: none; }
+    .bottom-nav { display: block; }
+    .quick-stats { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .kas-public { grid-template-columns: 1fr; gap: 10px; }
+    .qs-card { padding: 14px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .qs-val { font-size: 22px; }
+    .main { padding: 16px; }
+    .topnav { padding: 0 16px; height: 56px; }
+    .logout-btn { display: none; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; }
+    .profile-actions { flex-direction: column; }
+    .profile-actions .btn { justify-content: center; }
+    .welcome-banner { padding: 22px 20px; }
+    .welcome-banner h1 { font-size: 22px; }
+    .welcome-banner::after { right: 16px; font-size: 60px; }
+  }
+  @media (max-width: 480px) {
+    .quick-stats { grid-template-columns: 1fr 1fr; }
+    .toast { bottom: 90px; right: 16px; left: 16px; }
+    .user-pill .uname { max-width: 80px; }
+  }
+
+  /* position toast above bottom nav on mobile */
+  @media (max-width: 768px) {
+    .toast { bottom: 90px; right: 16px; }
   }
 </style>
 </head>
@@ -535,21 +236,30 @@
 <!-- Top nav -->
 <nav class="topnav">
   <div class="nav-logo">SI<span>MART</span></div>
-
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('beranda')">🏠 Beranda</button>
-    <button class="nav-link" onclick="showPage('surat')">📄 Surat Saya</button>
+    <button class="nav-link" onclick="showPage('surat')">📄 Surat</button>
     <button class="nav-link" onclick="showPage('kas')">💰 Kas RT</button>
     <button class="nav-link" onclick="showPage('pengumuman')">📢 Pengumuman</button>
     <button class="nav-link" onclick="showPage('profil')">👤 Profil</button>
   </div>
-
   <div class="nav-right">
     <div class="user-pill">
       <div class="avatar">👤</div>
       <span class="uname" id="userName">Warga</span>
     </div>
     <button class="logout-btn" onclick="logout()">Keluar</button>
+  </div>
+</nav>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bnav-btn active" id="bnav-beranda" onclick="showPage('beranda')"><span class="bicon">🏠</span>Beranda</button>
+    <button class="bnav-btn" id="bnav-surat" onclick="showPage('surat')"><span class="bicon">📄</span>Surat</button>
+    <button class="bnav-btn" id="bnav-kas" onclick="showPage('kas')"><span class="bicon">💰</span>Kas</button>
+    <button class="bnav-btn" id="bnav-pengumuman" onclick="showPage('pengumuman')"><span class="bicon">📢</span>Info</button>
+    <button class="bnav-btn" id="bnav-profil" onclick="showPage('profil')"><span class="bicon">👤</span>Profil</button>
   </div>
 </nav>
 
@@ -562,56 +272,36 @@
       <h1 id="wBannerName">Warga RT</h1>
       <p>Portal warga RT digital — urus administrasi dari mana saja</p>
     </div>
-
     <div class="quick-stats">
-      <div class="qs-card">
+      <div class="qs-card" onclick="showPage('surat')">
         <div class="qs-icon blue">📄</div>
-        <div class="qs-info">
-          <div class="qs-val" id="qsSurat">0</div>
-          <div class="qs-label">Surat Saya</div>
-        </div>
+        <div><div class="qs-val" id="qsSurat">0</div><div class="qs-label">Surat Saya</div></div>
       </div>
-      <div class="qs-card">
+      <div class="qs-card" onclick="showPage('surat')">
         <div class="qs-icon gold">⏳</div>
-        <div class="qs-info">
-          <div class="qs-val" id="qsPending">0</div>
-          <div class="qs-label">Menunggu Proses</div>
-        </div>
+        <div><div class="qs-val" id="qsPending">0</div><div class="qs-label">Menunggu Proses</div></div>
       </div>
-      <div class="qs-card">
+      <div class="qs-card" onclick="showPage('pengumuman')">
         <div class="qs-icon green">📢</div>
-        <div class="qs-info">
-          <div class="qs-val" id="qsAnn">0</div>
-          <div class="qs-label">Pengumuman</div>
-        </div>
+        <div><div class="qs-val" id="qsAnn">0</div><div class="qs-label">Pengumuman</div></div>
       </div>
     </div>
-
     <div id="latestAnn"></div>
   </div>
 
   <!-- SURAT -->
   <div class="page" id="page-surat">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div class="page-header">
       <div>
-        <h2 style="font-family:'Fraunces',serif; font-size:26px;">Surat Saya</h2>
-        <p style="color:var(--muted); font-size:14px; margin-top:4px;">Ajukan dan pantau status surat Anda</p>
+        <h2>Surat Saya</h2>
+        <p>Ajukan dan pantau status surat Anda</p>
       </div>
       <button class="btn btn-primary" onclick="openModal('modalAjukanSurat')">+ Ajukan Surat</button>
     </div>
-
     <div class="card">
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Jenis Surat</th>
-              <th>Tanggal</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
+          <thead><tr><th>No</th><th>Jenis Surat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
           <tbody id="tabelSuratWarga"></tbody>
         </table>
       </div>
@@ -620,39 +310,19 @@
 
   <!-- KAS -->
   <div class="page" id="page-kas">
-    <div style="margin-bottom:20px;">
-      <h2 style="font-family:'Fraunces',serif; font-size:26px;">Kas RT</h2>
-      <p style="color:var(--muted); font-size:14px; margin-top:4px;">Transparansi keuangan kas RT kami</p>
+    <div class="page-header">
+      <div><h2>Kas RT</h2><p>Transparansi keuangan RT kami</p></div>
     </div>
-
     <div class="kas-public">
-      <div class="kas-pub-item masuk">
-        <div class="label">Total Pemasukan</div>
-        <div class="value" id="wTotalMasuk">Rp 0</div>
-      </div>
-      <div class="kas-pub-item keluar">
-        <div class="label">Total Pengeluaran</div>
-        <div class="value" id="wTotalKeluar">Rp 0</div>
-      </div>
-      <div class="kas-pub-item saldo">
-        <div class="label">Saldo</div>
-        <div class="value" id="wSaldo">Rp 0</div>
-      </div>
+      <div class="kas-pub-item masuk"><div class="label">Total Pemasukan</div><div class="value" id="wTotalMasuk">Rp 0</div></div>
+      <div class="kas-pub-item keluar"><div class="label">Total Pengeluaran</div><div class="value" id="wTotalKeluar">Rp 0</div></div>
+      <div class="kas-pub-item saldo"><div class="label">Saldo</div><div class="value" id="wSaldo">Rp 0</div></div>
     </div>
-
     <div class="card">
       <div class="card-header"><h3>Riwayat Transaksi</h3></div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Tanggal</th>
-              <th>Jenis</th>
-              <th>Jumlah</th>
-              <th>Keterangan</th>
-            </tr>
-          </thead>
+          <thead><tr><th>No</th><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Keterangan</th></tr></thead>
           <tbody id="tabelKasWarga"></tbody>
         </table>
       </div>
@@ -661,296 +331,291 @@
 
   <!-- PENGUMUMAN -->
   <div class="page" id="page-pengumuman">
-    <div style="margin-bottom:20px;">
-      <h2 style="font-family:'Fraunces',serif; font-size:26px;">Pengumuman RT</h2>
-      <p style="color:var(--muted); font-size:14px; margin-top:4px;">Informasi terkini dari pengurus RT</p>
-    </div>
-
+    <div class="page-header"><div><h2>Pengumuman</h2><p>Informasi terbaru dari pengurus RT</p></div></div>
     <div class="ann-grid" id="listAnnWarga"></div>
   </div>
 
   <!-- PROFIL -->
   <div class="page" id="page-profil">
-    <div style="margin-bottom:20px;">
-      <h2 style="font-family:'Fraunces',serif; font-size:26px;">Profil Saya</h2>
-      <p style="color:var(--muted); font-size:14px; margin-top:4px;">Informasi akun dan data diri Anda</p>
+    <div class="page-header">
+      <div><h2>Profil Saya</h2><p>Data diri dan pengaturan akun</p></div>
     </div>
 
-    <div class="profile-card" id="profileCard"></div>
+    <!-- VIEW PROFILE -->
+    <div id="profileCard" class="profile-card"></div>
+
+    <!-- EDIT PROFILE FORM -->
+    <div class="edit-profile-form" id="editProfileForm">
+      <div class="edit-form-title">✏️ Edit Profil</div>
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="epNama" disabled>
+        <div class="field-note">Nama hanya bisa diubah oleh Admin RT</div>
+      </div>
+      <div class="form-group">
+        <label>NIK</label>
+        <input type="text" id="epNik" disabled>
+        <div class="field-note">NIK hanya bisa diubah oleh Admin RT</div>
+      </div>
+      <div class="form-group">
+        <label>Alamat</label>
+        <input type="text" id="epAlamat" placeholder="Alamat lengkap">
+      </div>
+      <div class="form-group">
+        <label>No. Telepon</label>
+        <input type="text" id="epTelepon" placeholder="08xxxxxxxxxx">
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;">🔒 Ganti Password (opsional)</div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Password Lama</label>
+          <input type="password" id="epOldPass" placeholder="Password saat ini">
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Password Baru</label>
+            <input type="password" id="epNewPass" placeholder="Min. 6 karakter">
+          </div>
+          <div class="form-group">
+            <label>Konfirmasi</label>
+            <input type="password" id="epConfirmPass" placeholder="Ulangi password baru">
+          </div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-success btn-full" onclick="saveProfile()">💾 Simpan Perubahan</button>
+        <button class="btn btn-ghost btn-full" onclick="cancelEdit()">Batal</button>
+      </div>
+    </div>
+
   </div>
 
 </div>
+
+<!-- MODALS -->
 
 <!-- Modal Ajukan Surat -->
 <div class="modal-overlay" id="modalAjukanSurat">
   <div class="modal">
-    <div class="modal-header">
-      <h3>Ajukan Surat</h3>
-      <button class="modal-close" onclick="closeModal('modalAjukanSurat')">✕</button>
-    </div>
+    <div class="modal-header"><h3>Ajukan Surat</h3><button class="modal-close" onclick="closeModal('modalAjukanSurat')">✕</button></div>
     <div class="modal-body">
       <div class="form-group">
         <label>Jenis Surat</label>
-        <select id="aJenis">
-          <option value="Domisili">Surat Keterangan Domisili</option>
-          <option value="Usaha">Surat Keterangan Usaha</option>
-          <option value="Tidak Mampu">Surat Keterangan Tidak Mampu</option>
-          <option value="Kelakuan Baik">Surat Keterangan Kelakuan Baik</option>
-          <option value="Pengantar KTP">Surat Pengantar KTP</option>
-          <option value="Pengantar KK">Surat Pengantar Kartu Keluarga</option>
+        <select id="sSuratJenis">
+          <option value="Domisili">Keterangan Domisili</option>
+          <option value="Usaha">Keterangan Usaha</option>
+          <option value="Tidak Mampu">Keterangan Tidak Mampu</option>
+          <option value="Kelahiran">Keterangan Kelahiran</option>
+          <option value="Kematian">Keterangan Kematian</option>
+          <option value="Pindah">Keterangan Pindah</option>
           <option value="Lainnya">Lainnya</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Keterangan / Alasan</label>
-        <textarea id="aKeterangan" placeholder="Jelaskan keperluan surat ini..."></textarea>
+        <label>Keterangan Tambahan (opsional)</label>
+        <textarea id="sSuratKet" placeholder="Tulis keterangan tambahan jika perlu..." style="min-height:90px;"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modalAjukanSurat')">Batal</button>
-      <button class="btn btn-primary" onclick="ajukanSurat()">📤 Ajukan</button>
+      <button class="btn btn-primary" onclick="ajukanSurat()">📄 Kirim Pengajuan</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
+<!-- Modal Detail Surat -->
+<div class="modal-overlay" id="modalSuratDetailW">
+  <div class="modal">
+    <div class="modal-header"><h3>Detail Surat</h3><button class="modal-close" onclick="closeModal('modalSuratDetailW')">✕</button></div>
+    <div class="modal-body" id="suratDetailWContent"></div>
+    <div class="modal-footer" id="suratDetailWActions"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+  // Auth
   const user = JSON.parse(sessionStorage.getItem('simart_user') || 'null');
   if (!user || user.role !== 'warga') window.location.href = 'index.html';
-
   document.getElementById('userName').textContent = user.nama;
-  document.getElementById('wBannerName').textContent = user.nama;
 
+  // Data helpers
   const getWarga = () => JSON.parse(localStorage.getItem('simart_warga') || '[]');
   const getSurat = () => JSON.parse(localStorage.getItem('simart_surat') || '[]');
   const getKas = () => JSON.parse(localStorage.getItem('simart_kas') || '[]');
   const getPengumuman = () => JSON.parse(localStorage.getItem('simart_pengumuman') || '[]');
-  const setSurat = d => localStorage.setItem('simart_surat', JSON.stringify(d));
+  const setWarga = v => localStorage.setItem('simart_warga', JSON.stringify(v));
+  const setSurat = v => localStorage.setItem('simart_surat', JSON.stringify(v));
   const formatRp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
 
   // Toast
-  function showToast(msg, type = 'success') {
+  function showToast(msg, type='success') {
     const t = document.getElementById('toast');
-    t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
-    t.className = 'toast show' + (type === 'error' ? ' error' : '');
+    t.textContent = (type==='success'?'✅ ':'❌ ') + msg;
+    t.className = 'toast show' + (type==='error'?' error':'');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
+  // Modal
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-  // Page nav
+  // Page navigation
   function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.bnav-btn').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
+    // desktop nav
+    document.querySelectorAll('.nav-link').forEach(n => {
+      if (n.textContent.toLowerCase().includes(name === 'beranda' ? 'beranda' : name === 'surat' ? 'surat' : name === 'kas' ? 'kas' : name === 'pengumuman' ? 'pengumuman' : 'profil'))
+        n.classList.add('active');
+    });
+    // mobile bottom nav
+    const bnav = document.getElementById('bnav-' + name);
+    if (bnav) bnav.classList.add('active');
 
-    const map = { beranda: 0, surat: 1, kas: 2, pengumuman: 3, profil: 4 };
-    const links = document.querySelectorAll('.nav-link');
-    if (links[map[name]]) links[map[name]].classList.add('active');
-
+    // render pages
     if (name === 'beranda') renderBeranda();
-    if (name === 'surat') renderSurat();
-    if (name === 'kas') renderKas();
-    if (name === 'pengumuman') renderPengumuman();
-    if (name === 'profil') renderProfil();
+    else if (name === 'surat') renderSuratWarga();
+    else if (name === 'kas') renderKas();
+    else if (name === 'pengumuman') renderPengumuman();
+    else if (name === 'profil') renderProfil();
   }
 
   // BERANDA
   function renderBeranda() {
-    const mySurat = getSurat().filter(s => s.warga_id === user.id);
-    const pending = mySurat.filter(s => s.status === 'pending').length;
-    const ann = getPengumuman();
-
+    document.getElementById('wBannerName').textContent = user.nama;
+    const mySurat = getSurat().filter(x => x.warga_id === user.id);
+    const pending = mySurat.filter(x => x.status === 'pending').length;
+    const anns = getPengumuman();
     document.getElementById('qsSurat').textContent = mySurat.length;
     document.getElementById('qsPending').textContent = pending;
-    document.getElementById('qsAnn').textContent = ann.length;
+    document.getElementById('qsAnn').textContent = anns.length;
 
     const la = document.getElementById('latestAnn');
-    const latest = ann.slice(-2).reverse();
-    if (!latest.length) {
-      la.innerHTML = '<div class="empty-state"><div class="icon">📢</div><h4>Belum ada pengumuman</h4></div>';
-      return;
-    }
+    const latestAnns = anns.slice().reverse().slice(0,3);
+    if (!latestAnns.length) { la.innerHTML=''; return; }
     la.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:16px; font-weight:700;">📢 Pengumuman Terbaru</h3>
-        <button class="btn btn-ghost btn-sm" onclick="showPage('pengumuman')">Lihat Semua</button>
-      </div>
-      <div class="ann-grid">
-        ${latest.map(a => `
-          <div class="ann-card">
-            <h4>${a.judul}</h4>
-            <div class="ann-date">📅 ${a.tanggal}</div>
-            <div class="ann-body">${a.isi}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
+      <div class="card">
+        <div class="card-header"><h3>📢 Pengumuman Terbaru</h3><button class="btn btn-ghost btn-sm" onclick="showPage('pengumuman')">Lihat Semua</button></div>
+        <div class="card-body">
+          ${latestAnns.map(a=>`
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px;">${a.judul}</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">📅 ${a.tanggal}</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;">${a.isi}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
   }
 
   // SURAT
-  function renderSurat() {
-    const mySurat = getSurat().filter(s => s.warga_id === user.id);
+  function renderSuratWarga() {
+    const mySurat = getSurat().filter(x => x.warga_id === user.id);
     const tb = document.getElementById('tabelSuratWarga');
-
     if (!mySurat.length) {
-      tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><h4>Belum ada surat</h4><p>Klik "+ Ajukan Surat" untuk membuat pengajuan</p></div></td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><h4>Belum ada surat</h4><p>Klik "Ajukan Surat" untuk membuat pengajuan</p></div></td></tr>`;
       return;
     }
-
-    tb.innerHTML = [...mySurat].reverse().map((s, i) => `
+    tb.innerHTML = [...mySurat].reverse().map((s,i) => `
       <tr>
-        <td style="color:var(--muted)">${i + 1}</td>
-        <td><strong>${s.jenis}</strong></td>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td><div style="font-weight:600;">${s.jenis}</div></td>
         <td>${s.tanggal}</td>
-        <td><span class="badge badge-${s.status}">${s.status}</span></td>
+        <td><span class="badge badge-${s.status}">${s.status==='pending'?'⏳ Menunggu':s.status==='approved'?'✅ Disetujui':'❌ Ditolak'}</span></td>
         <td>
-          ${s.status === 'approved' ? `<button class="btn btn-primary btn-sm" onclick="cetakSurat(${s.id})">🖨️ Cetak</button>` : '—'}
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="viewSuratW(${s.id})">👁️</button>
+            ${s.status==='approved'?`<button class="btn btn-success btn-sm" onclick="printSuratW(${s.id})">🖨️</button>`:''}
+          </div>
         </td>
-      </tr>
-    `).join('');
+      </tr>`).join('');
   }
-
   function ajukanSurat() {
-    const jenis = document.getElementById('aJenis').value;
-    const keterangan = document.getElementById('aKeterangan').value.trim();
-    const today = new Date().toISOString().split('T')[0];
-
+    const jenis = document.getElementById('sSuratJenis').value;
+    const ket = document.getElementById('sSuratKet').value.trim();
     const data = getSurat();
-    const newId = data.length ? Math.max(...data.map(x => x.id)) + 1 : 1;
-    data.push({ id: newId, warga_id: user.id, nama: user.nama, jenis, tanggal: today, status: 'pending', keterangan });
+    const newId = data.length ? Math.max(...data.map(x=>x.id))+1 : 1;
+    data.push({ id:newId, warga_id:user.id, nama:user.nama, jenis, tanggal:new Date().toISOString().split('T')[0], status:'pending', keterangan:ket });
     setSurat(data);
     closeModal('modalAjukanSurat');
-    document.getElementById('aKeterangan').value = '';
-    renderSurat();
-    showToast('Surat berhasil diajukan! Tunggu persetujuan admin.');
+    document.getElementById('sSuratKet').value = '';
+    renderSuratWarga();
+    showToast('Pengajuan surat berhasil dikirim!');
   }
-
-  function cetakSurat(id) {
-    const s = getSurat().find(x => x.id === id);
+  function viewSuratW(id) {
+    const s = getSurat().find(x=>x.id===id);
     if (!s) return;
-    const wargaData = getWarga().find(w => w.id === user.id) || {};
-    const tahun = new Date().getFullYear();
-    const nomorSurat = `${String(id).padStart(3,'0')}/GH-AYANA/${s.jenis.substring(0,3).toUpperCase()}/${tahun}`;
-    const tglFormatted = new Date(s.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
-
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html>
-<html><head><title>Surat Keterangan ${s.jenis}</title>
-<style>
-  @page { margin: 2cm 2.5cm; }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; line-height: 1.5; }
-  .kop { margin-bottom: 8px; }
-  .kop table { border-collapse: collapse; }
-  .kop td { padding: 0 4px 0 0; vertical-align: top; font-size: 11pt; }
-  .kop td:first-child { white-space: nowrap; }
-  .judul-surat { text-align: center; margin: 18px 0 4px; }
-  .judul-surat h2 { font-size: 13pt; font-weight: bold; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px; }
-  .judul-surat .nomor { font-size: 11pt; margin-top: 4px; }
-  .pembuka { margin: 18px 0 14px; text-align: justify; font-size: 12pt; line-height: 1.7; }
-  .data-table { width: 100%; border-collapse: collapse; margin: 4px 0 18px; }
-  .data-table td { padding: 3px 0; font-size: 12pt; vertical-align: top; }
-  .data-table td:first-child { width: 32px; text-align: right; padding-right: 8px; }
-  .data-table td:nth-child(2) { width: 200px; padding-left: 4px; }
-  .data-table td:nth-child(3) { width: 16px; text-align: center; }
-  .data-table td:nth-child(4) { padding-left: 8px; }
-  .dotted { border-bottom: 1px dotted #333; min-width: 200px; display: inline-block; }
-  .penutup { margin-top: 16px; text-align: justify; font-size: 12pt; line-height: 1.7; }
-  .ttd-section { display: flex; justify-content: space-between; margin-top: 40px; }
-  .ttd-block { text-align: center; min-width: 180px; }
-  .ttd-block .jabatan { font-size: 12pt; margin-bottom: 60px; }
-  .ttd-block .nama { font-size: 12pt; font-weight: bold; text-decoration: underline; }
-  .tanggal-kanan { text-align: right; margin-top: 28px; font-size: 12pt; }
-</style>
-</head>
-<body>
-
-<div class="kop">
-  <table>
-    <tr><td>RT/RW</td><td>:</td><td>07/04</td></tr>
-    <tr><td>Kelurahan</td><td>:</td><td>Pabuaran</td></tr>
-    <tr><td>Kecamatan</td><td>:</td><td>Cibinong</td></tr>
-  </table>
-</div>
-
-<div class="judul-surat">
-  <h2>Surat Keterangan ${s.jenis}</h2>
-  <div class="nomor">No. &nbsp; ${nomorSurat}</div>
-</div>
-
-<p class="pembuka">
-  Yang bertanda tangan dibawah ini Ketua RT 07 RW 04 Kelurahan Pabuaran, Kecamatan Cibinong, Kabupaten Bogor menerangkan bahwa ;
-</p>
-
-<table class="data-table">
-  <tr>
-    <td>1.</td><td>Nama Lengkap</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>2.</td><td>Jenis Kelamin</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>3.</td><td>Tempat, tanggal lahir</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>4.</td><td>Kewarganegaraan</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>5.</td><td>Agama</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>6.</td><td>Status perkawinan</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>7.</td><td>Pekerjaan</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>8.</td><td>Alamat KTP/KK</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td></td><td></td><td></td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>9.</td><td>Alamat saat ini</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-  <tr>
-    <td>10.</td><td>NIK</td><td>:</td>
-    <td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-  </tr>
-</table>
-
-<p class="penutup">
-  Demikian Surat Keterangan ${s.jenis} ini kami dibuat dengan sebenarnya agar dapat dipergunakan untuk keperluan ………………..
-</p>
-
-<div class="tanggal-kanan">Pabuaran, ${tglFormatted}</div>
-
-<div class="ttd-section">
-  <div class="ttd-block">
-    <div class="jabatan">Ketua RT 07</div>
-    <div class="nama">Rohim</div>
-  </div>
-  <div class="ttd-block">
-    <div class="jabatan">Ketua RW 04</div>
-    <div class="nama">Yusuf Hernawan</div>
-  </div>
-</div>
-
-</body></html>`);
+    document.getElementById('suratDetailWContent').innerHTML = `
+      <div style="display:grid;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--muted)">Jenis Surat</span><strong>${s.jenis}</strong></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--muted)">Tanggal Ajuan</span><strong>${s.tanggal}</strong></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--muted)">Status</span><span class="badge badge-${s.status}">${s.status==='pending'?'⏳ Menunggu Proses':s.status==='approved'?'✅ Disetujui':'❌ Ditolak'}</span></div>
+        ${s.keterangan?`<div><div style="color:var(--muted);margin-bottom:6px;">Catatan:</div><p style="font-size:14px;line-height:1.6;">${s.keterangan}</p></div>`:''}
+        ${s.status==='rejected'&&s.keterangan?`<div style="background:rgba(233,69,96,0.08);border-radius:10px;padding:12px;"><div style="color:var(--red);font-size:13px;">Alasan penolakan: ${s.keterangan}</div></div>`:''}
+      </div>`;
+    const acts = document.getElementById('suratDetailWActions');
+    acts.innerHTML = `<button class="btn btn-ghost" onclick="closeModal('modalSuratDetailW')">Tutup</button>`;
+    if (s.status==='approved') acts.innerHTML += `<button class="btn btn-primary" onclick="printSuratW(${s.id})">🖨️ Cetak Surat</button>`;
+    openModal('modalSuratDetailW');
+  }
+  function printSuratW(id) {
+    const s = getSurat().find(x=>x.id===id);
+    const w = getWarga().find(x=>x.id===user.id);
+    if (!s||!w) return;
+    const nomorSurat = `${String(id).padStart(3,'0')}/RT07/RW04/${new Date().getFullYear()}`;
+    const tgl = new Date(s.tanggal);
+    const tglFormatted = tgl.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+    const win = window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Surat Keterangan</title><style>
+      @page{margin:2cm;} body{font-family:'Times New Roman',serif;font-size:12pt;color:#000;}
+      .kop{border-bottom:3px double #000;padding-bottom:10px;margin-bottom:18px;}
+      .kop table td{padding:2px 4px;font-size:11pt;}
+      .judul-surat{text-align:center;margin:16px 0;}
+      .judul-surat h2{font-size:14pt;text-transform:uppercase;text-decoration:underline;letter-spacing:1px;}
+      .nomor{font-size:12pt;margin-top:6px;}
+      .pembuka{margin:18px 0 14px;text-align:justify;line-height:1.7;}
+      .data-table{width:100%;border-collapse:collapse;margin:4px 0 18px;}
+      .data-table td{padding:3px 0;vertical-align:top;}
+      .data-table td:first-child{width:32px;text-align:right;padding-right:8px;}
+      .data-table td:nth-child(2){width:200px;}
+      .data-table td:nth-child(3){width:16px;text-align:center;}
+      .dotted{border-bottom:1px dotted #333;min-width:200px;display:inline-block;}
+      .penutup{margin-top:16px;text-align:justify;line-height:1.7;}
+      .tanggal-kanan{text-align:right;margin-top:28px;}
+      .ttd-section{display:flex;justify-content:space-between;margin-top:40px;}
+      .ttd-block{text-align:center;min-width:180px;}
+      .ttd-block .jabatan{margin-bottom:60px;}
+      .ttd-block .nama{font-weight:bold;text-decoration:underline;}
+    </style></head><body>
+    <div class="kop"><table>
+      <tr><td>RT/RW</td><td>:</td><td>07/04</td></tr>
+      <tr><td>Kelurahan</td><td>:</td><td>Pabuaran</td></tr>
+      <tr><td>Kecamatan</td><td>:</td><td>Cibinong</td></tr>
+    </table></div>
+    <div class="judul-surat"><h2>Surat Keterangan ${s.jenis}</h2><div class="nomor">No. &nbsp; ${nomorSurat}</div></div>
+    <p class="pembuka">Yang bertanda tangan dibawah ini Ketua RT 07 RW 04 Kelurahan Pabuaran, Kecamatan Cibinong, Kabupaten Bogor menerangkan bahwa ;</p>
+    <table class="data-table">
+      <tr><td>1.</td><td>Nama Lengkap</td><td>:</td><td>${w.nama}</td></tr>
+      <tr><td>2.</td><td>Jenis Kelamin</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
+      <tr><td>3.</td><td>Tempat, tanggal lahir</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
+      <tr><td>4.</td><td>Kewarganegaraan</td><td>:</td><td>Indonesia</td></tr>
+      <tr><td>5.</td><td>Agama</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
+      <tr><td>6.</td><td>Status Perkawinan</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
+      <tr><td>7.</td><td>Pekerjaan</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
+      <tr><td>8.</td><td>Alamat KTP/KK</td><td>:</td><td>${w.alamat}</td></tr>
+      <tr><td>9.</td><td>Alamat saat ini</td><td>:</td><td>${w.alamat}</td></tr>
+      <tr><td>10.</td><td>NIK</td><td>:</td><td>${w.nik}</td></tr>
+    </table>
+    <p class="penutup">Demikian Surat Keterangan ${s.jenis} ini kami dibuat dengan sebenarnya agar dapat dipergunakan untuk keperluan ………………</p>
+    <div class="tanggal-kanan">Pabuaran, ${tglFormatted}</div>
+    <div class="ttd-section">
+      <div class="ttd-block"><div class="jabatan">Ketua RT 07</div><div class="nama">Rohim</div></div>
+      <div class="ttd-block"><div class="jabatan">Ketua RW 04</div><div class="nama">Yusuf Hernawan</div></div>
+    </div>
+    </body></html>`);
     win.document.close();
     setTimeout(() => win.print(), 400);
   }
@@ -958,61 +623,42 @@
   // KAS
   function renderKas() {
     const data = getKas();
-    const masuk = data.filter(x => x.jenis === 'masuk').reduce((a, x) => a + +x.jumlah, 0);
-    const keluar = data.filter(x => x.jenis === 'keluar').reduce((a, x) => a + +x.jumlah, 0);
-    const saldo = masuk - keluar;
-
+    const masuk = data.filter(x=>x.jenis==='masuk').reduce((a,x)=>a+ +x.jumlah,0);
+    const keluar = data.filter(x=>x.jenis==='keluar').reduce((a,x)=>a+ +x.jumlah,0);
     document.getElementById('wTotalMasuk').textContent = formatRp(masuk);
     document.getElementById('wTotalKeluar').textContent = formatRp(keluar);
-    document.getElementById('wSaldo').textContent = formatRp(saldo);
-
+    document.getElementById('wSaldo').textContent = formatRp(masuk-keluar);
     const tb = document.getElementById('tabelKasWarga');
-    if (!data.length) {
-      tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">💰</div><h4>Belum ada transaksi</h4></div></td></tr>`;
-      return;
-    }
-
-    tb.innerHTML = [...data].reverse().map((k, i) => `
+    if (!data.length) { tb.innerHTML=`<tr><td colspan="5"><div class="empty-state"><div class="icon">💰</div><h4>Belum ada transaksi</h4></div></td></tr>`; return; }
+    tb.innerHTML = [...data].reverse().map((k,i) => `
       <tr>
-        <td style="color:var(--muted)">${i + 1}</td>
+        <td style="color:var(--muted)">${i+1}</td>
         <td>${k.tanggal}</td>
-        <td>
-          <span style="display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:${k.jenis === 'masuk' ? 'var(--green)' : 'var(--red)'}">
-            ${k.jenis === 'masuk' ? '⬆ Pemasukan' : '⬇ Pengeluaran'}
-          </span>
-        </td>
-        <td style="font-weight:700; color:${k.jenis === 'masuk' ? 'var(--green)' : 'var(--red)'}">
-          ${k.jenis === 'masuk' ? '+' : '-'}${formatRp(k.jumlah)}
-        </td>
+        <td style="font-size:12px;font-weight:700;color:${k.jenis==='masuk'?'var(--green)':'var(--red)'};">${k.jenis==='masuk'?'⬆ Pemasukan':'⬇ Pengeluaran'}</td>
+        <td style="font-weight:700;color:${k.jenis==='masuk'?'var(--green)':'var(--red)'};">${k.jenis==='masuk'?'+':'-'}${formatRp(k.jumlah)}</td>
         <td>${k.keterangan}</td>
-      </tr>
-    `).join('');
+      </tr>`).join('');
   }
 
   // PENGUMUMAN
   function renderPengumuman() {
     const data = getPengumuman().slice().reverse();
     const el = document.getElementById('listAnnWarga');
-
-    if (!data.length) {
-      el.innerHTML = `<div class="empty-state"><div class="icon">📢</div><h4>Belum ada pengumuman</h4></div>`;
-      return;
-    }
-
-    el.innerHTML = data.map(a => `
+    if (!data.length) { el.innerHTML=`<div class="empty-state"><div class="icon">📢</div><h4>Belum ada pengumuman</h4></div>`; return; }
+    el.innerHTML = data.map(a=>`
       <div class="ann-card">
         <h4>${a.judul}</h4>
         <div class="ann-date">📅 ${a.tanggal}</div>
         <div class="ann-body">${a.isi}</div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   // PROFIL
   function renderProfil() {
     const w = getWarga().find(x => x.id === user.id);
     if (!w) return;
-
+    document.getElementById('editProfileForm').classList.remove('show');
+    document.getElementById('profileCard').style.display = 'block';
     document.getElementById('profileCard').innerHTML = `
       <div class="profile-header">
         <div class="profile-avatar">👤</div>
@@ -1022,48 +668,98 @@
       <div class="profile-info">
         <div class="info-row">
           <div class="info-icon">🪪</div>
-          <div>
+          <div style="flex:1;">
             <div class="info-label">NIK</div>
-            <div class="info-value" style="font-family:monospace;">${w.nik}</div>
+            <div class="info-value" style="font-family:monospace;font-size:13px;">${w.nik}</div>
           </div>
         </div>
         <div class="info-row">
           <div class="info-icon">🏠</div>
-          <div>
+          <div style="flex:1;">
             <div class="info-label">Alamat</div>
             <div class="info-value">${w.alamat}</div>
           </div>
         </div>
         <div class="info-row">
           <div class="info-icon">📱</div>
-          <div>
+          <div style="flex:1;">
             <div class="info-label">Telepon</div>
             <div class="info-value">${w.telepon}</div>
           </div>
         </div>
         <div class="info-row">
           <div class="info-icon">👤</div>
-          <div>
+          <div style="flex:1;">
             <div class="info-label">Username</div>
             <div class="info-value">${w.username}</div>
           </div>
         </div>
         <div class="info-row">
           <div class="info-icon">🏘️</div>
-          <div>
+          <div style="flex:1;">
             <div class="info-label">Status Hunian</div>
             <div class="info-value">${w.status}</div>
           </div>
         </div>
       </div>
-    `;
+      <div style="padding:18px 24px;border-top:1px solid var(--border);">
+        <button class="btn btn-primary btn-full" onclick="openEditProfile()">✏️ Edit Profil Saya</button>
+      </div>`;
+  }
+
+  function openEditProfile() {
+    const w = getWarga().find(x => x.id === user.id);
+    if (!w) return;
+    document.getElementById('epNama').value = w.nama;
+    document.getElementById('epNik').value = w.nik;
+    document.getElementById('epAlamat').value = w.alamat;
+    document.getElementById('epTelepon').value = w.telepon;
+    document.getElementById('epOldPass').value = '';
+    document.getElementById('epNewPass').value = '';
+    document.getElementById('epConfirmPass').value = '';
+    document.getElementById('profileCard').style.display = 'none';
+    document.getElementById('editProfileForm').classList.add('show');
+    document.getElementById('editProfileForm').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function cancelEdit() {
+    document.getElementById('editProfileForm').classList.remove('show');
+    document.getElementById('profileCard').style.display = 'block';
+  }
+
+  function saveProfile() {
+    const alamat = document.getElementById('epAlamat').value.trim();
+    const telepon = document.getElementById('epTelepon').value.trim();
+    const oldPass = document.getElementById('epOldPass').value;
+    const newPass = document.getElementById('epNewPass').value;
+    const confirmPass = document.getElementById('epConfirmPass').value;
+
+    if (!alamat || !telepon) { showToast('Alamat dan telepon wajib diisi','error'); return; }
+
+    const warga = getWarga();
+    const idx = warga.findIndex(x => x.id === user.id);
+    if (idx === -1) return;
+
+    let update = { ...warga[idx], alamat, telepon };
+
+    // Password change
+    if (newPass || oldPass) {
+      if (!oldPass) { showToast('Masukkan password lama','error'); return; }
+      if (warga[idx].password !== oldPass) { showToast('Password lama salah','error'); return; }
+      if (newPass.length < 6) { showToast('Password baru minimal 6 karakter','error'); return; }
+      if (newPass !== confirmPass) { showToast('Konfirmasi password tidak cocok','error'); return; }
+      update.password = newPass;
+    }
+
+    warga[idx] = update;
+    setWarga(warga);
+    showToast('Profil berhasil diperbarui!');
+    cancelEdit();
+    renderProfil();
   }
 
   function logout() {
-    if (confirm('Yakin ingin keluar?')) {
-      sessionStorage.removeItem('simart_user');
-      window.location.href = 'index.html';
-    }
+    if (confirm('Yakin ingin keluar?')) { sessionStorage.removeItem('simart_user'); window.location.href='index.html'; }
   }
 
   // Init
