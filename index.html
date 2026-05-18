@@ -17,9 +17,7 @@
     --glass: rgba(255,255,255,0.05);
     --glass-border: rgba(255,255,255,0.1);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--primary);
@@ -28,368 +26,173 @@
     overflow: hidden;
     position: relative;
   }
-
-  /* Animated background */
   .bg-animated {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
+    position: fixed; inset: 0; z-index: 0;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     overflow: hidden;
   }
-
   .bg-animated::before {
-    content: '';
-    position: absolute;
-    width: 600px;
-    height: 600px;
+    content: ''; position: absolute;
+    width: 600px; height: 600px;
     background: radial-gradient(circle, rgba(233,69,96,0.15) 0%, transparent 70%);
-    top: -200px;
-    right: -100px;
-    border-radius: 50%;
+    top: -200px; right: -100px; border-radius: 50%;
     animation: float1 8s ease-in-out infinite;
   }
-
   .bg-animated::after {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
+    content: ''; position: absolute;
+    width: 400px; height: 400px;
     background: radial-gradient(circle, rgba(245,166,35,0.1) 0%, transparent 70%);
-    bottom: -100px;
-    left: 10%;
-    border-radius: 50%;
+    bottom: -100px; left: 10%; border-radius: 50%;
     animation: float2 10s ease-in-out infinite;
   }
-
   .grid-overlay {
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 50px 50px;
-    z-index: 0;
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 50px 50px; z-index: 0;
   }
+  @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-50px,50px) scale(1.1);} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(50px,-30px) scale(0.9);} }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.5);} }
+  @keyframes drift { 0%{transform:translateY(100vh) rotate(0deg);opacity:0;} 10%{opacity:1;} 90%{opacity:1;} 100%{transform:translateY(-100px) rotate(720deg);opacity:0;} }
 
-  @keyframes float1 {
-    0%, 100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(-50px, 50px) scale(1.1); }
-  }
-  @keyframes float2 {
-    0%, 100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(50px, -30px) scale(0.9); }
-  }
-
-  /* Layout */
   .login-wrapper {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
+    position: relative; z-index: 1;
+    display: flex; width: 100%; min-height: 100vh;
   }
 
-  /* Left panel */
+  /* LEFT PANEL */
   .left-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 60px 80px;
-    position: relative;
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; padding: 60px 80px; position: relative;
   }
-
   .brand-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    padding: 8px 16px;
-    border-radius: 100px;
-    margin-bottom: 40px;
-    width: fit-content;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    padding: 8px 16px; border-radius: 100px; margin-bottom: 40px; width: fit-content;
   }
-
-  .brand-badge .dot {
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  .brand-badge span {
-    color: var(--gray);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.5); }
-  }
-
-  .hero-title {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(52px, 5vw, 80px);
-    line-height: 1.05;
-    color: var(--white);
-    margin-bottom: 24px;
-  }
-
-  .hero-title .accent { color: var(--accent); font-style: italic; }
-
-  .hero-desc {
-    color: var(--gray);
-    font-size: 16px;
-    line-height: 1.8;
-    max-width: 440px;
-    margin-bottom: 50px;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    max-width: 440px;
-  }
-
+  .brand-badge .dot { width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite; }
+  .brand-badge span { color:var(--gray);font-size:13px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase; }
+  .hero-title { font-family:'Fraunces',serif;font-size:clamp(52px,5vw,80px);line-height:1.05;color:var(--white);margin-bottom:24px; }
+  .hero-title .accent { color:var(--accent);font-style:italic; }
+  .hero-desc { color:var(--gray);font-size:16px;line-height:1.8;max-width:440px;margin-bottom:50px; }
+  .features-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:440px; }
   .feature-card {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 20px;
-    transition: all 0.3s ease;
+    background:var(--glass);border:1px solid var(--glass-border);
+    border-radius:16px;padding:20px;transition:all 0.3s ease;
   }
+  .feature-card:hover { background:rgba(255,255,255,0.08);border-color:rgba(233,69,96,0.3);transform:translateY(-2px); }
+  .feature-card .icon { font-size:28px;margin-bottom:8px; }
+  .feature-card .label { color:var(--light);font-size:13px;font-weight:600;letter-spacing:0.02em; }
+  .feature-card .sublabel { color:var(--gray);font-size:11px;margin-top:2px; }
 
-  .feature-card:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(233,69,96,0.3);
-    transform: translateY(-2px);
-  }
-
-  .feature-card .icon {
-    font-size: 28px;
-    margin-bottom: 8px;
-  }
-
-  .feature-card .label {
-    color: var(--light);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-
-  .feature-card .sublabel {
-    color: var(--gray);
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
-  /* Right panel — login card */
+  /* RIGHT PANEL */
   .right-panel {
-    width: 480px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    background: rgba(255,255,255,0.03);
-    border-left: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
+    width: 480px; display: flex; align-items: center; justify-content: center;
+    padding: 40px; background: rgba(255,255,255,0.03);
+    border-left: 1px solid var(--glass-border); backdrop-filter: blur(20px);
+    overflow-y: auto;
   }
+  .login-card { width: 100%; max-width: 380px; }
+  .login-card h2 { font-family:'Fraunces',serif;font-size:36px;color:var(--white);margin-bottom:6px; }
+  .login-card .subtitle { color:var(--gray);font-size:14px;margin-bottom:28px; }
 
-  .login-card {
-    width: 100%;
-    max-width: 380px;
+  /* TABS (Login / Daftar) */
+  .tab-switcher {
+    display: flex; gap: 0; margin-bottom: 24px;
+    background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px;
   }
-
-  .login-card h2 {
-    font-family: 'Fraunces', serif;
-    font-size: 36px;
-    color: var(--white);
-    margin-bottom: 6px;
+  .tab-btn {
+    flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600;
+    transition: all 0.3s ease; background: transparent; color: var(--gray);
   }
+  .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
 
-  .login-card .subtitle {
-    color: var(--gray);
-    font-size: 14px;
-    margin-bottom: 36px;
-  }
-
-  /* Role selector */
+  /* ROLE SELECTOR */
   .role-selector {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 28px;
-    background: rgba(0,0,0,0.2);
-    padding: 5px;
-    border-radius: 12px;
+    display: flex; gap: 10px; margin-bottom: 24px;
+    background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px;
   }
-
   .role-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    background: transparent;
-    color: var(--gray);
+    flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600;
+    transition: all 0.3s ease; background: transparent; color: var(--gray);
   }
+  .role-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
 
-  .role-btn.active {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 4px 15px rgba(233,69,96,0.4);
-  }
-
-  /* Form */
-  .form-group {
-    margin-bottom: 20px;
-    position: relative;
-  }
-
-  .form-group label {
-    display: block;
-    color: var(--light);
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: 0.02em;
-  }
-
-  .input-wrap {
-    position: relative;
-  }
-
-  .input-wrap .input-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: var(--gray);
-    pointer-events: none;
-  }
-
+  /* FORM */
+  .form-section { display: none; }
+  .form-section.active { display: block; }
+  .form-group { margin-bottom: 18px; position: relative; }
+  .form-group label { display:block;color:var(--light);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:0.02em; }
+  .input-wrap { position: relative; }
+  .input-wrap .input-icon { position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray);pointer-events:none; }
   .form-group input, .form-group select {
-    width: 100%;
-    padding: 14px 16px 14px 44px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: var(--white);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    outline: none;
-    -webkit-appearance: none;
+    width: 100%; padding: 13px 16px 13px 44px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    border-radius: 12px; color: var(--white);
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+    transition: all 0.3s ease; outline: none; -webkit-appearance: none;
   }
-
   .form-group input:focus, .form-group select:focus {
-    border-color: var(--accent);
-    background: rgba(233,69,96,0.05);
+    border-color: var(--accent); background: rgba(233,69,96,0.05);
     box-shadow: 0 0 0 3px rgba(233,69,96,0.1);
   }
-
   .form-group input::placeholder { color: rgba(136,146,176,0.6); }
   .form-group select option { background: #1a1a2e; }
 
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
   .login-btn {
-    width: 100%;
-    padding: 15px;
+    width: 100%; padding: 15px;
     background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 0.02em;
-    margin-top: 8px;
-    position: relative;
-    overflow: hidden;
+    border: none; border-radius: 12px; color: white;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.02em;
+    margin-top: 4px; position: relative; overflow: hidden;
   }
+  .login-btn::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 100%);opacity:0;transition:opacity 0.3s; }
+  .login-btn:hover { transform:translateY(-2px);box-shadow:0 10px 30px rgba(233,69,96,0.4); }
+  .login-btn:hover::before { opacity:1; }
+  .login-btn:active { transform:translateY(0); }
 
-  .login-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-    opacity: 0;
-    transition: opacity 0.3s;
+  .alert-box {
+    padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-top: 14px; display: none;
   }
-
-  .login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(233,69,96,0.4);
-  }
-
-  .login-btn:hover::before { opacity: 1; }
-  .login-btn:active { transform: translateY(0); }
-
-  .login-error {
-    background: rgba(233,69,96,0.1);
-    border: 1px solid rgba(233,69,96,0.3);
-    color: #ff6b7a;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin-top: 16px;
-    display: none;
-  }
+  .alert-error { background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);color:#ff6b7a; }
+  .alert-success { background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);color:#3fb950; }
 
   .login-footer {
-    margin-top: 32px;
-    padding-top: 24px;
+    margin-top: 28px; padding-top: 20px;
     border-top: 1px solid var(--glass-border);
-    text-align: center;
-    color: var(--gray);
-    font-size: 12px;
+    text-align: center; color: var(--gray); font-size: 12px;
   }
-
   .login-footer strong { color: var(--light); }
 
-  /* Responsive */
+  .info-note {
+    background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.25);
+    border-radius: 10px; padding: 12px 14px; font-size: 12px; color: rgba(245,166,35,0.9);
+    margin-bottom: 20px; line-height: 1.6;
+  }
+
+  /* Particles */
+  .particles { position:fixed;inset:0;z-index:0;pointer-events:none; }
+  .particle { position:absolute;border-radius:50%;animation:drift linear infinite;opacity:0; }
+
+  /* RESPONSIVE */
   @media (max-width: 900px) {
     .left-panel { display: none; }
-    .right-panel { width: 100%; border: none; }
+    .right-panel { width: 100%; border: none; padding: 32px 24px; }
+    body { overflow: auto; }
   }
-
-  /* Particle dots */
-  .particles {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .particle {
-    position: absolute;
-    border-radius: 50%;
-    animation: drift linear infinite;
-    opacity: 0;
-  }
-
-  @keyframes drift {
-    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  @media (max-width: 480px) {
+    .right-panel { padding: 24px 20px; }
+    .login-card h2 { font-size: 28px; }
+    .form-row-2 { grid-template-columns: 1fr; gap: 0; }
   }
 </style>
 </head>
 <body>
-
 <div class="bg-animated"></div>
 <div class="grid-overlay"></div>
 <div class="particles" id="particles"></div>
@@ -401,76 +204,123 @@
       <div class="dot"></div>
       <span>Sistem Informasi RT Digital</span>
     </div>
-
-    <h1 class="hero-title">
-      Kelola RT<br>dengan <span class="accent">Cerdas</span><br>& Efisien
-    </h1>
-
-    <p class="hero-desc">
-      Platform administrasi RT modern yang memudahkan pengelolaan data warga, surat-menyurat, keuangan kas, dan pengumuman dalam satu sistem terintegrasi.
-    </p>
-
+    <h1 class="hero-title">Kelola RT<br>dengan <span class="accent">Cerdas</span><br>& Efisien</h1>
+    <p class="hero-desc">Platform administrasi RT modern yang memudahkan pengelolaan data warga, surat-menyurat, keuangan kas, dan pengumuman dalam satu sistem terintegrasi.</p>
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="icon">👥</div>
-        <div class="label">Data Warga</div>
-        <div class="sublabel">Kelola profil warga RT</div>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📄</div>
-        <div class="label">Surat Digital</div>
-        <div class="sublabel">Pengajuan & cetak surat</div>
-      </div>
-      <div class="feature-card">
-        <div class="icon">💰</div>
-        <div class="label">Kas RT</div>
-        <div class="sublabel">Catat pemasukan & pengeluaran</div>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📢</div>
-        <div class="label">Pengumuman</div>
-        <div class="sublabel">Informasi warga terkini</div>
-      </div>
+      <div class="feature-card"><div class="icon">👥</div><div class="label">Data Warga</div><div class="sublabel">Kelola profil warga RT</div></div>
+      <div class="feature-card"><div class="icon">📄</div><div class="label">Surat Digital</div><div class="sublabel">Pengajuan & cetak surat</div></div>
+      <div class="feature-card"><div class="icon">💰</div><div class="label">Kas RT</div><div class="sublabel">Catat pemasukan & pengeluaran</div></div>
+      <div class="feature-card"><div class="icon">📢</div><div class="label">Pengumuman</div><div class="sublabel">Informasi warga terkini</div></div>
     </div>
   </div>
 
   <!-- Right -->
   <div class="right-panel">
     <div class="login-card">
-      <h2>Masuk</h2>
-      <p class="subtitle">Pilih peran dan masukkan kredensial Anda</p>
+      <h2 id="cardTitle">Masuk</h2>
+      <p class="subtitle" id="cardSubtitle">Pilih peran dan masukkan kredensial Anda</p>
 
-      <div class="role-selector">
-        <button class="role-btn active" onclick="setRole('admin')">🔐 Admin RT</button>
-        <button class="role-btn" onclick="setRole('warga')">👤 Warga</button>
+      <!-- Tab Login / Daftar -->
+      <div class="tab-switcher" id="tabSwitcher">
+        <button class="tab-btn active" onclick="switchTab('login')">🔑 Masuk</button>
+        <button class="tab-btn" onclick="switchTab('daftar')">📝 Daftar Warga</button>
       </div>
 
-      <div class="form-group">
-        <label>Username</label>
-        <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input type="text" id="username" placeholder="Masukkan username" autocomplete="off">
+      <!-- LOGIN FORM -->
+      <div class="form-section active" id="sectionLogin">
+        <div class="role-selector">
+          <button class="role-btn active" onclick="setRole('admin')">🔐 Admin RT</button>
+          <button class="role-btn" onclick="setRole('warga')">👤 Warga</button>
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="username" placeholder="Masukkan username" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔑</span>
+            <input type="password" id="password" placeholder="Masukkan password">
+          </div>
+        </div>
+        <button class="login-btn" onclick="doLogin()">Masuk ke Sistem →</button>
+        <div class="alert-box alert-error" id="loginError">⚠️ Username atau password salah. Silakan coba lagi.</div>
+        <div class="login-footer">
+          <strong>Demo Akun:</strong><br>
+          Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Password</label>
-        <div class="input-wrap">
-          <span class="input-icon">🔑</span>
-          <input type="password" id="password" placeholder="Masukkan password">
+      <!-- REGISTER FORM -->
+      <div class="form-section" id="sectionDaftar">
+        <div class="info-note">
+          📋 Pendaftaran Anda akan diverifikasi oleh Admin RT terlebih dahulu sebelum bisa login.
         </div>
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="rNama" placeholder="Nama sesuai KTP">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>NIK (16 digit)</label>
+          <div class="input-wrap">
+            <span class="input-icon">🪪</span>
+            <input type="text" id="rNik" placeholder="Nomor Induk Kependudukan" maxlength="16">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Alamat</label>
+          <div class="input-wrap">
+            <span class="input-icon">🏠</span>
+            <input type="text" id="rAlamat" placeholder="Alamat lengkap di RT">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>No. Telepon</label>
+            <div class="input-wrap">
+              <span class="input-icon">📱</span>
+              <input type="text" id="rTelepon" placeholder="08xxxxxxxxxx">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Status Hunian</label>
+            <div class="input-wrap">
+              <span class="input-icon">🏘️</span>
+              <select id="rStatus">
+                <option value="Tetap">Tetap</option>
+                <option value="Kontrak">Kontrak</option>
+                <option value="Kost">Kost</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔤</span>
+              <input type="text" id="rUsername" placeholder="Username login">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="rPassword" placeholder="Min. 6 karakter">
+            </div>
+          </div>
+        </div>
+        <button class="login-btn" onclick="doDaftar()">Kirim Pendaftaran →</button>
+        <div class="alert-box alert-error" id="daftarError"></div>
+        <div class="alert-box alert-success" id="daftarSuccess"></div>
       </div>
 
-      <button class="login-btn" onclick="doLogin()">Masuk ke Sistem →</button>
-
-      <div class="login-error" id="loginError">
-        ⚠️ Username atau password salah. Silakan coba lagi.
-      </div>
-
-      <div class="login-footer">
-        <strong>Demo Akun:</strong><br>
-        Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123
-      </div>
     </div>
   </div>
 </div>
@@ -480,8 +330,8 @@
   function initData() {
     if (!localStorage.getItem('simart_init')) {
       localStorage.setItem('simart_warga', JSON.stringify([
-        { id: 1, nama: 'Anwar Maulana', nik: '123123123123', alamat: 'Jl. Mawar No. 1', telepon: '08123456789', status: 'Tetap', username: 'warga1', password: 'warga123' },
-        { id: 2, nama: 'Siti Rahayu', nik: '121112212112', alamat: 'Jl. Melati No. 3', telepon: '08987654321', status: 'Tetap', username: 'warga2', password: 'warga123' }
+        { id: 1, nama: 'Anwar Maulana', nik: '3201012345670001', alamat: 'Jl. Mawar No. 1', telepon: '08123456789', status: 'Tetap', username: 'warga1', password: 'warga123' },
+        { id: 2, nama: 'Siti Rahayu', nik: '3201012345670002', alamat: 'Jl. Melati No. 3', telepon: '08987654321', status: 'Tetap', username: 'warga2', password: 'warga123' }
       ]));
       localStorage.setItem('simart_surat', JSON.stringify([
         { id: 1, warga_id: 1, nama: 'Anwar Maulana', jenis: 'Usaha', tanggal: '2026-04-17', status: 'pending', keterangan: '' }
@@ -490,13 +340,34 @@
       localStorage.setItem('simart_pengumuman', JSON.stringify([
         { id: 1, judul: 'Kerja Bakti Minggu Ini', tanggal: '2026-04-17', isi: 'Seluruh warga dimohon hadir dalam kegiatan kerja bakti pada hari Minggu pukul 07.00 WIB.' }
       ]));
+      localStorage.setItem('simart_pending_reg', JSON.stringify([]));
       localStorage.setItem('simart_init', '1');
     }
+    // ensure pending_reg key exists
+    if (!localStorage.getItem('simart_pending_reg')) {
+      localStorage.setItem('simart_pending_reg', JSON.stringify([]));
+    }
   }
-
   initData();
 
   let currentRole = 'admin';
+  let currentTab = 'login';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'daftar' && i === 1));
+    });
+    document.getElementById('sectionLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('sectionDaftar').classList.toggle('active', tab === 'daftar');
+    if (tab === 'login') {
+      document.getElementById('cardTitle').textContent = 'Masuk';
+      document.getElementById('cardSubtitle').textContent = 'Pilih peran dan masukkan kredensial Anda';
+    } else {
+      document.getElementById('cardTitle').textContent = 'Daftar';
+      document.getElementById('cardSubtitle').textContent = 'Buat akun baru sebagai warga RT';
+    }
+  }
 
   function setRole(role) {
     currentRole = role;
@@ -511,14 +382,15 @@
   function doLogin() {
     const u = document.getElementById('username').value.trim();
     const p = document.getElementById('password').value.trim();
+    const err = document.getElementById('loginError');
+    err.style.display = 'none';
+    if (!u || !p) { err.style.display = 'block'; err.textContent = '⚠️ Username dan password wajib diisi.'; return; }
 
     if (currentRole === 'admin') {
       if (u === 'admin' && p === 'admin123') {
         sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT', username: 'admin' }));
         window.location.href = 'admin.html';
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
+      } else { err.style.display = 'block'; err.textContent = '⚠️ Username atau password admin salah.'; }
     } else {
       const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
       const found = warga.find(w => w.username === u && w.password === p);
@@ -526,12 +398,59 @@
         sessionStorage.setItem('simart_user', JSON.stringify({ role: 'warga', nama: found.nama, id: found.id, username: found.username }));
         window.location.href = 'warga.html';
       } else {
-        document.getElementById('loginError').style.display = 'block';
+        // Check if pending
+        const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
+        const isPending = pending.find(x => x.username === u);
+        if (isPending) {
+          err.style.display = 'block';
+          err.textContent = '⏳ Akun Anda masih menunggu persetujuan Admin RT.';
+        } else {
+          err.style.display = 'block';
+          err.textContent = '⚠️ Username atau password salah.';
+        }
       }
     }
   }
 
-  document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  function doDaftar() {
+    const nama = document.getElementById('rNama').value.trim();
+    const nik = document.getElementById('rNik').value.trim();
+    const alamat = document.getElementById('rAlamat').value.trim();
+    const telepon = document.getElementById('rTelepon').value.trim();
+    const status = document.getElementById('rStatus').value;
+    const username = document.getElementById('rUsername').value.trim();
+    const password = document.getElementById('rPassword').value.trim();
+    const errEl = document.getElementById('daftarError');
+    const succEl = document.getElementById('daftarSuccess');
+    errEl.style.display = 'none'; succEl.style.display = 'none';
+
+    if (!nama || !nik || !alamat || !telepon || !username || !password) {
+      errEl.style.display = 'block'; errEl.textContent = '⚠️ Semua field wajib diisi.'; return;
+    }
+    if (nik.length < 16) { errEl.style.display = 'block'; errEl.textContent = '⚠️ NIK harus 16 digit.'; return; }
+    if (password.length < 6) { errEl.style.display = 'block'; errEl.textContent = '⚠️ Password minimal 6 karakter.'; return; }
+
+    const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
+    const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
+
+    if (warga.find(w => w.username === username) || pending.find(w => w.username === username)) {
+      errEl.style.display = 'block'; errEl.textContent = '⚠️ Username sudah digunakan. Pilih username lain.'; return;
+    }
+    if (warga.find(w => w.nik === nik) || pending.find(w => w.nik === nik)) {
+      errEl.style.display = 'block'; errEl.textContent = '⚠️ NIK sudah terdaftar.'; return;
+    }
+
+    const newId = (pending.length ? Math.max(...pending.map(x => x.id || 0)) : 0) + 9000;
+    pending.push({ id: newId, nama, nik, alamat, telepon, status, username, password, tanggal_daftar: new Date().toISOString().split('T')[0] });
+    localStorage.setItem('simart_pending_reg', JSON.stringify(pending));
+
+    succEl.style.display = 'block';
+    succEl.textContent = '✅ Pendaftaran berhasil! Tunggu persetujuan Admin RT untuk bisa login.';
+    // Clear form
+    ['rNama','rNik','rAlamat','rTelepon','rUsername','rPassword'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') { if (currentTab === 'login') doLogin(); else doDaftar(); } });
 
   // Particles
   const pc = document.getElementById('particles');
@@ -539,13 +458,7 @@
     const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 4 + 2;
-    p.style.cssText = `
-      width: ${size}px; height: ${size}px;
-      left: ${Math.random() * 100}%;
-      background: ${Math.random() > 0.5 ? 'rgba(233,69,96,0.6)' : 'rgba(245,166,35,0.4)'};
-      animation-duration: ${Math.random() * 15 + 10}s;
-      animation-delay: ${Math.random() * 10}s;
-    `;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${Math.random()>0.5?'rgba(233,69,96,0.6)':'rgba(245,166,35,0.4)'};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
     pc.appendChild(p);
   }
 </script>
