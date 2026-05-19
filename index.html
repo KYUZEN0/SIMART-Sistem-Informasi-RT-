@@ -354,78 +354,68 @@
     }
   }
 
-  function doLogin() {
-    const u = document.getElementById('username').value.trim();
-    const p = document.getElementById('password').value.trim();
-    const err = document.getElementById('loginError');
-    err.style.display = 'none';
-    if (!u || !p) { err.style.display = 'block'; err.textContent = '⚠️ Username dan password wajib diisi.'; return; }
+async function doLogin() {
+  const u = username.value.trim();
+  const p = password.value.trim();
+  const err = document.getElementById('loginError');
+  err.style.display = 'none';
 
-    // Cek admin dulu
-    if (u === 'admin' && p === 'admin123') {
-      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT', username: 'admin' }));
-      window.location.href = 'admin.html';
-      return;
-    }
+  if (!u || !p) {
+    err.style.display = 'block';
+    err.textContent = 'Username dan password wajib diisi';
+    return;
+  }
 
-    // Cek warga aktif
-    const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
-    const found = warga.find(w => w.username === u && w.password === p);
-    if (found) {
-      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'warga', nama: found.nama, id: found.id, username: found.username }));
+  if (u === 'admin' && p === 'admin123') {
+    sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin' }));
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  // CEK DI DATA WARGA (sudah disetujui)
+  const snapshot = await fbGet(fbChild(fbRef(db), 'warga/' + u));
+
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    if (data.password === p) {
+      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'warga', nama: data.nama }));
       window.location.href = 'warga.html';
       return;
     }
-
-    // Cek apakah masih pending
-    const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
-    const isPending = pending.find(x => x.username === u);
-    if (isPending) {
-      err.style.display = 'block';
-      err.textContent = '⏳ Akun Anda masih menunggu persetujuan Admin RT.';
-    } else {
-      err.style.display = 'block';
-      err.textContent = '⚠️ Username atau password salah. Silakan coba lagi.';
-    }
   }
 
-  function doDaftar() {
-    const nama = document.getElementById('rNama').value.trim();
-    const nik = document.getElementById('rNik').value.trim();
-    const alamat = document.getElementById('rAlamat').value.trim();
-    const telepon = document.getElementById('rTelepon').value.trim();
-    const status = document.getElementById('rStatus').value;
-    const username = document.getElementById('rUsername').value.trim();
-    const password = document.getElementById('rPassword').value.trim();
-    const errEl = document.getElementById('daftarError');
-    const succEl = document.getElementById('daftarSuccess');
-    errEl.style.display = 'none'; succEl.style.display = 'none';
+  err.style.display = 'block';
+  err.textContent = 'Akun belum disetujui atau salah password';
+}
+async function doDaftar() {
+  const nama = rNama.value.trim();
+  const nik = rNik.value.trim();
+  const alamat = rAlamat.value.trim();
+  const telepon = rTelepon.value.trim();
+  const status = rStatus.value;
+  const username = rUsername.value.trim();
+  const password = rPassword.value.trim();
 
-    if (!nama || !nik || !alamat || !telepon || !username || !password) {
-      errEl.style.display = 'block'; errEl.textContent = '⚠️ Semua field wajib diisi.'; return;
-    }
-    if (nik.length < 16) { errEl.style.display = 'block'; errEl.textContent = '⚠️ NIK harus 16 digit.'; return; }
-    if (password.length < 6) { errEl.style.display = 'block'; errEl.textContent = '⚠️ Password minimal 6 karakter.'; return; }
+  const errEl = document.getElementById('daftarError');
+  const succEl = document.getElementById('daftarSuccess');
+  errEl.style.display = 'none';
+  succEl.style.display = 'none';
 
-    const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
-    const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
-
-    if (warga.find(w => w.username === username) || pending.find(w => w.username === username)) {
-      errEl.style.display = 'block'; errEl.textContent = '⚠️ Username sudah digunakan. Pilih username lain.'; return;
-    }
-    if (warga.find(w => w.nik === nik) || pending.find(w => w.nik === nik)) {
-      errEl.style.display = 'block'; errEl.textContent = '⚠️ NIK sudah terdaftar.'; return;
-    }
-
-    const newId = (pending.length ? Math.max(...pending.map(x => x.id || 0)) : 0) + 9000;
-    pending.push({ id: newId, nama, nik, alamat, telepon, status, username, password, tanggal_daftar: new Date().toISOString().split('T')[0] });
-    localStorage.setItem('simart_pending_reg', JSON.stringify(pending));
-
-    succEl.style.display = 'block';
-    succEl.textContent = '✅ Pendaftaran berhasil! Tunggu persetujuan Admin RT untuk bisa login.';
-    // Clear form
-    ['rNama','rNik','rAlamat','rTelepon','rUsername','rPassword'].forEach(id => document.getElementById(id).value = '');
+  if (!nama || !nik || !alamat || !telepon || !username || !password) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Semua field wajib diisi';
+    return;
   }
+
+  // Simpan ke Firebase (pending)
+  await fbSet(fbRef(db, 'pending_reg/' + username), {
+    nama, nik, alamat, telepon, status, username, password,
+    tanggal_daftar: new Date().toISOString().split('T')[0]
+  });
+
+  succEl.style.display = 'block';
+  succEl.textContent = 'Pendaftaran dikirim! Tunggu persetujuan admin.';
+}
 
   document.addEventListener('keydown', e => { if (e.key === 'Enter') { if (currentTab === 'login') doLogin(); else doDaftar(); } });
 
@@ -438,6 +428,37 @@
     p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${Math.random()>0.5?'rgba(233,69,96,0.6)':'rgba(245,166,35,0.4)'};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
     pc.appendChild(p);
   }
+  </script>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCq5imFX1yB2fc3QA0vyEi3lSQZJ1B7ur4",
+    authDomain: "simart-a4cec.firebaseapp.com",
+    databaseURL: "https://simart-a4cec-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "simart-a4cec",
+    storageBucket: "simart-a4cec.firebasestorage.app",
+    messagingSenderId: "267839232734",
+    appId: "1:267839232734:web:4125baa50e4d43c02dc04f",
+    measurementId: "G-3ML8ZP8KL2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // BIKIN GLOBAL BIAR BISA DIPAKAI FUNCTION LAIN
+  window.db = db;
+  window.fbRef = ref;
+  window.fbSet = set;
+  window.fbGet = get;
+  window.fbChild = child;
+</script>
+
+</body>
+</html>
 </script>
 </body>
 </html>
