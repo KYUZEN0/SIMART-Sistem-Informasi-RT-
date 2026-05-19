@@ -296,7 +296,7 @@
         <h2>Surat Saya</h2>
         <p>Ajukan dan pantau status surat Anda</p>
       </div>
-      <button class="btn btn-primary" onclick="openModal('modalAjukanSurat')">+ Ajukan Surat</button>
+      <button class="btn btn-primary" onclick="bukaAjukanSurat()">+ Ajukan Surat</button>
     </div>
     <div class="card">
       <div class="table-wrap">
@@ -396,9 +396,16 @@
 
 <!-- Modal Ajukan Surat -->
 <div class="modal-overlay" id="modalAjukanSurat">
-  <div class="modal">
-    <div class="modal-header"><h3>Ajukan Surat</h3><button class="modal-close" onclick="closeModal('modalAjukanSurat')">✕</button></div>
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <h3>Ajukan Surat</h3>
+      <button class="modal-close" onclick="closeModal('modalAjukanSurat')">✕</button>
+    </div>
     <div class="modal-body">
+      <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--blue);margin-bottom:18px;line-height:1.6;">
+        📋 Isi semua data dengan benar. Setelah disetujui Admin, surat langsung siap dicetak dan tinggal minta tanda tangan RT/RW.
+      </div>
+
       <div class="form-group">
         <label>Jenis Surat</label>
         <select id="sSuratJenis">
@@ -411,9 +418,77 @@
           <option value="Lainnya">Lainnya</option>
         </select>
       </div>
+
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Data Pemohon</div>
+
+      <div class="form-group">
+        <label>1. Nama Lengkap</label>
+        <input type="text" id="sNama" placeholder="Sesuai KTP">
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>2. Jenis Kelamin</label>
+          <select id="sJK">
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>4. Kewarganegaraan</label>
+          <input type="text" id="sWN" value="Indonesia">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>3. Tempat Lahir</label>
+          <input type="text" id="sTempatLahir" placeholder="Kota tempat lahir">
+        </div>
+        <div class="form-group">
+          <label>3. Tanggal Lahir</label>
+          <input type="date" id="sTglLahir">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>5. Agama</label>
+          <select id="sAgama">
+            <option value="Islam">Islam</option>
+            <option value="Kristen Protestan">Kristen Protestan</option>
+            <option value="Kristen Katolik">Kristen Katolik</option>
+            <option value="Hindu">Hindu</option>
+            <option value="Buddha">Buddha</option>
+            <option value="Konghucu">Konghucu</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>6. Status Perkawinan</label>
+          <select id="sStatusKawin">
+            <option value="Belum Kawin">Belum Kawin</option>
+            <option value="Kawin">Kawin</option>
+            <option value="Cerai Hidup">Cerai Hidup</option>
+            <option value="Cerai Mati">Cerai Mati</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>7. Pekerjaan</label>
+        <input type="text" id="sPekerjaan" placeholder="Contoh: Wiraswasta, Karyawan Swasta, dll">
+      </div>
+      <div class="form-group">
+        <label>8. Alamat KTP/KK</label>
+        <input type="text" id="sAlamatKTP" placeholder="Alamat sesuai KTP">
+      </div>
+      <div class="form-group">
+        <label>9. Alamat Saat Ini</label>
+        <input type="text" id="sAlamatNow" placeholder="Alamat tempat tinggal sekarang">
+      </div>
+      <div class="form-group">
+        <label>10. NIK</label>
+        <input type="text" id="sNik" placeholder="16 digit NIK" maxlength="16" style="font-family:monospace;letter-spacing:0.05em;">
+      </div>
       <div class="form-group">
         <label>Keterangan Tambahan (opsional)</label>
-        <textarea id="sSuratKet" placeholder="Tulis keterangan tambahan jika perlu..." style="min-height:90px;"></textarea>
+        <textarea id="sSuratKet" placeholder="Tulis keterangan tambahan jika perlu..." style="min-height:70px;"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -533,15 +608,56 @@
         </td>
       </tr>`).join('');
   }
+  function bukaAjukanSurat() {
+    // Pre-fill dari data profil warga
+    const w = getWarga().find(x => x.id === user.id);
+    if (w) {
+      document.getElementById('sNama').value = w.nama || '';
+      document.getElementById('sNik').value = w.nik || '';
+      document.getElementById('sAlamatKTP').value = w.alamat || '';
+      document.getElementById('sAlamatNow').value = w.alamat || '';
+    }
+    openModal('modalAjukanSurat');
+  }
+
   function ajukanSurat() {
     const jenis = document.getElementById('sSuratJenis').value;
+    const nama = document.getElementById('sNama').value.trim();
+    const jk = document.getElementById('sJK').value;
+    const tempatLahir = document.getElementById('sTempatLahir').value.trim();
+    const tglLahir = document.getElementById('sTglLahir').value;
+    const wn = document.getElementById('sWN').value.trim();
+    const agama = document.getElementById('sAgama').value;
+    const statusKawin = document.getElementById('sStatusKawin').value;
+    const pekerjaan = document.getElementById('sPekerjaan').value.trim();
+    const alamatKTP = document.getElementById('sAlamatKTP').value.trim();
+    const alamatNow = document.getElementById('sAlamatNow').value.trim();
+    const nik = document.getElementById('sNik').value.trim();
     const ket = document.getElementById('sSuratKet').value.trim();
+
+    if (!nama || !tempatLahir || !tglLahir || !pekerjaan || !alamatKTP || !alamatNow || !nik) {
+      showToast('Harap isi semua field yang wajib diisi', 'error'); return;
+    }
+    if (nik.length < 16) { showToast('NIK harus 16 digit', 'error'); return; }
+
+    const tglLahirFormatted = new Date(tglLahir).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+
     const data = getSurat();
     const newId = data.length ? Math.max(...data.map(x=>x.id))+1 : 1;
-    data.push({ id:newId, warga_id:user.id, nama:user.nama, jenis, tanggal:new Date().toISOString().split('T')[0], status:'pending', keterangan:ket });
+    data.push({
+      id: newId, warga_id: user.id, nama, jenis,
+      tanggal: new Date().toISOString().split('T')[0],
+      status: 'pending', keterangan: ket,
+      // data surat lengkap
+      jk, tempat_lahir: tempatLahir, tgl_lahir: tglLahir,
+      tgl_lahir_format: tglLahirFormatted,
+      kewarganegaraan: wn, agama, status_kawin: statusKawin,
+      pekerjaan, alamat_ktp: alamatKTP, alamat_now: alamatNow, nik
+    });
     setSurat(data);
     closeModal('modalAjukanSurat');
-    document.getElementById('sSuratKet').value = '';
+    // reset
+    ['sNama','sTempatLahir','sPekerjaan','sAlamatKTP','sAlamatNow','sNik','sSuratKet'].forEach(id => document.getElementById(id).value = '');
     renderSuratWarga();
     showToast('Pengajuan surat berhasil dikirim!');
   }
@@ -563,61 +679,105 @@
   }
   function printSuratW(id) {
     const s = getSurat().find(x=>x.id===id);
-    const w = getWarga().find(x=>x.id===user.id);
-    if (!s||!w) return;
-    const nomorSurat = `${String(id).padStart(3,'0')}/RT07/RW04/${new Date().getFullYear()}`;
+    if (!s) return;
+    cetakSurat(s);
+  }
+
+  function cetakSurat(s) {
+    const nomorSurat = `${String(s.id).padStart(3,'0')}/RT07/RW04/${new Date().getFullYear()}`;
     const tgl = new Date(s.tanggal);
     const tglFormatted = tgl.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+    // Gunakan data dari form pengajuan, fallback ke data profil jika field lama
+    const nama        = s.nama || '-';
+    const jk          = s.jk || '...................................';
+    const tempatTglLahir = s.tempat_lahir && s.tgl_lahir_format
+      ? `${s.tempat_lahir}, ${s.tgl_lahir_format}`
+      : '...................................';
+    const wn          = s.kewarganegaraan || 'Indonesia';
+    const agama       = s.agama || '...................................';
+    const statusKawin = s.status_kawin || '...................................';
+    const pekerjaan   = s.pekerjaan || '...................................';
+    const alamatKTP   = s.alamat_ktp || '...................................';
+    const alamatNow   = s.alamat_now || '...................................';
+    const nik         = s.nik || '...................................';
+
     const win = window.open('','_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Surat Keterangan</title><style>
-      @page{margin:2cm;} body{font-family:'Times New Roman',serif;font-size:12pt;color:#000;}
-      .kop{border-bottom:3px double #000;padding-bottom:10px;margin-bottom:18px;}
-      .kop table td{padding:2px 4px;font-size:11pt;}
-      .judul-surat{text-align:center;margin:16px 0;}
-      .judul-surat h2{font-size:14pt;text-transform:uppercase;text-decoration:underline;letter-spacing:1px;}
-      .nomor{font-size:12pt;margin-top:6px;}
-      .pembuka{margin:18px 0 14px;text-align:justify;line-height:1.7;}
-      .data-table{width:100%;border-collapse:collapse;margin:4px 0 18px;}
-      .data-table td{padding:3px 0;vertical-align:top;}
-      .data-table td:first-child{width:32px;text-align:right;padding-right:8px;}
-      .data-table td:nth-child(2){width:200px;}
-      .data-table td:nth-child(3){width:16px;text-align:center;}
-      .dotted{border-bottom:1px dotted #333;min-width:200px;display:inline-block;}
-      .penutup{margin-top:16px;text-align:justify;line-height:1.7;}
-      .tanggal-kanan{text-align:right;margin-top:28px;}
-      .ttd-section{display:flex;justify-content:space-between;margin-top:40px;}
-      .ttd-block{text-align:center;min-width:180px;}
-      .ttd-block .jabatan{margin-bottom:60px;}
-      .ttd-block .nama{font-weight:bold;text-decoration:underline;}
-    </style></head><body>
-    <div class="kop"><table>
-      <tr><td>RT/RW</td><td>:</td><td>07/04</td></tr>
-      <tr><td>Kelurahan</td><td>:</td><td>Pabuaran</td></tr>
-      <tr><td>Kecamatan</td><td>:</td><td>Cibinong</td></tr>
-    </table></div>
-    <div class="judul-surat"><h2>Surat Keterangan ${s.jenis}</h2><div class="nomor">No. &nbsp; ${nomorSurat}</div></div>
-    <p class="pembuka">Yang bertanda tangan dibawah ini Ketua RT 07 RW 04 Kelurahan Pabuaran, Kecamatan Cibinong, Kabupaten Bogor menerangkan bahwa ;</p>
-    <table class="data-table">
-      <tr><td>1.</td><td>Nama Lengkap</td><td>:</td><td>${w.nama}</td></tr>
-      <tr><td>2.</td><td>Jenis Kelamin</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
-      <tr><td>3.</td><td>Tempat, tanggal lahir</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
-      <tr><td>4.</td><td>Kewarganegaraan</td><td>:</td><td>Indonesia</td></tr>
-      <tr><td>5.</td><td>Agama</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
-      <tr><td>6.</td><td>Status Perkawinan</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
-      <tr><td>7.</td><td>Pekerjaan</td><td>:</td><td><span class="dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>
-      <tr><td>8.</td><td>Alamat KTP/KK</td><td>:</td><td>${w.alamat}</td></tr>
-      <tr><td>9.</td><td>Alamat saat ini</td><td>:</td><td>${w.alamat}</td></tr>
-      <tr><td>10.</td><td>NIK</td><td>:</td><td>${w.nik}</td></tr>
-    </table>
-    <p class="penutup">Demikian Surat Keterangan ${s.jenis} ini kami dibuat dengan sebenarnya agar dapat dipergunakan untuk keperluan ………………</p>
-    <div class="tanggal-kanan">Pabuaran, ${tglFormatted}</div>
-    <div class="ttd-section">
-      <div class="ttd-block"><div class="jabatan">Ketua RT 07</div><div class="nama">Rohim</div></div>
-      <div class="ttd-block"><div class="jabatan">Ketua RW 04</div><div class="nama">Yusuf Hernawan</div></div>
-    </div>
-    </body></html>`);
+    win.document.write(`<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>Surat Keterangan ${s.jenis} - ${nama}</title>
+<style>
+  @page { margin: 2.5cm 2.5cm 2cm 2.5cm; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; line-height: 1.4; }
+  .kop { margin-bottom: 0; }
+  .kop table { width: 100%; border-collapse: collapse; }
+  .kop td { padding: 2px 0; font-size: 11.5pt; vertical-align: top; }
+  .kop td:nth-child(2) { width: 10px; padding: 2px 6px; }
+  .divider { border: none; border-top: 4px double #000; margin: 10px 0 20px; }
+  .judul-surat { text-align: center; margin: 0 0 4px; }
+  .judul-surat h2 { font-size: 13.5pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; letter-spacing: 0.5px; margin: 0; }
+  .nomor { text-align: center; font-size: 12pt; margin-bottom: 18px; }
+  .pembuka { text-align: justify; margin-bottom: 12px; line-height: 1.7; }
+  .data-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+  .data-table td { padding: 3px 0; vertical-align: top; font-size: 12pt; }
+  .data-table .num  { width: 28px; text-align: left; }
+  .data-table .field { width: 170px; }
+  .data-table .sep  { width: 14px; text-align: center; }
+  .data-table .val  { }
+  .penutup { text-align: justify; line-height: 1.7; margin-bottom: 24px; }
+  .tanggal-kanan { text-align: right; margin-bottom: 10px; }
+  .ttd-section { display: flex; justify-content: space-between; }
+  .ttd-block { text-align: center; min-width: 160px; }
+  .ttd-space { height: 70px; }
+  .ttd-nama { font-weight: bold; text-decoration: underline; font-size: 12pt; }
+</style>
+</head><body>
+
+<div class="kop">
+  <table>
+    <tr><td>RT/RW</td><td>:</td><td>07 / 04</td></tr>
+    <tr><td>Kelurahan</td><td>:</td><td>Pabuaran</td></tr>
+    <tr><td>Kecamatan</td><td>:</td><td>Cibinong</td></tr>
+  </table>
+</div>
+<hr class="divider">
+
+<div class="judul-surat"><h2>Surat Keterangan ${s.jenis}</h2></div>
+<div class="nomor">No. &nbsp;&nbsp; ${nomorSurat}</div>
+
+<p class="pembuka">Yang bertanda tangan dibawah ini Ketua RT 07 RW 04 Kelurahan Pabuaran, Kecamatan Cibinong, Kabupaten Bogor menerangkan bahwa ;</p>
+
+<table class="data-table">
+  <tr><td class="num">1.</td><td class="field">Nama Lengkap</td><td class="sep">:</td><td class="val">${nama}</td></tr>
+  <tr><td class="num">2.</td><td class="field">Jenis Kelamin</td><td class="sep">:</td><td class="val">${jk}</td></tr>
+  <tr><td class="num">3.</td><td class="field">Tempat, tanggal lahir</td><td class="sep">:</td><td class="val">${tempatTglLahir}</td></tr>
+  <tr><td class="num">4.</td><td class="field">Kewarganegaraan</td><td class="sep">:</td><td class="val">${wn}</td></tr>
+  <tr><td class="num">5.</td><td class="field">Agama</td><td class="sep">:</td><td class="val">${agama}</td></tr>
+  <tr><td class="num">6.</td><td class="field">Status Perkawinan</td><td class="sep">:</td><td class="val">${statusKawin}</td></tr>
+  <tr><td class="num">7.</td><td class="field">Pekerjaan</td><td class="sep">:</td><td class="val">${pekerjaan}</td></tr>
+  <tr><td class="num">8.</td><td class="field">Alamat KTP/KK</td><td class="sep">:</td><td class="val">${alamatKTP}</td></tr>
+  <tr><td class="num">9.</td><td class="field">Alamat saat ini</td><td class="sep">:</td><td class="val">${alamatNow}</td></tr>
+  <tr><td class="num">10.</td><td class="field">NIK</td><td class="sep">:</td><td class="val">${nik}</td></tr>
+</table>
+
+<p class="penutup">Demikian Surat Keterangan ${s.jenis} ini kami buat dengan sebenarnya agar dapat dipergunakan untuk keperluan ………………</p>
+
+<div class="tanggal-kanan">Pabuaran, ${tglFormatted}</div>
+<div class="ttd-section">
+  <div class="ttd-block">
+    <div>Ketua RT 07</div>
+    <div class="ttd-space"></div>
+    <div class="ttd-nama">Rohim</div>
+  </div>
+  <div class="ttd-block">
+    <div>Ketua RW 04</div>
+    <div class="ttd-space"></div>
+    <div class="ttd-nama">Yusuf Hernawan</div>
+  </div>
+</div>
+
+</body></html>`);
     win.document.close();
-    setTimeout(() => win.print(), 400);
+    setTimeout(() => win.print(), 500);
   }
 
   // KAS
