@@ -108,17 +108,7 @@
   }
   .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
 
-  /* ROLE SELECTOR */
-  .role-selector {
-    display: flex; gap: 10px; margin-bottom: 24px;
-    background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px;
-  }
-  .role-btn {
-    flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
-    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600;
-    transition: all 0.3s ease; background: transparent; color: var(--gray);
-  }
-  .role-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
+  /* ROLE SELECTOR - removed */
 
   /* FORM */
   .form-section { display: none; }
@@ -218,7 +208,7 @@
   <div class="right-panel">
     <div class="login-card">
       <h2 id="cardTitle">Masuk</h2>
-      <p class="subtitle" id="cardSubtitle">Pilih peran dan masukkan kredensial Anda</p>
+      <p class="subtitle" id="cardSubtitle">Masukkan username dan password Anda</p>
 
       <!-- Tab Login / Daftar -->
       <div class="tab-switcher" id="tabSwitcher">
@@ -228,10 +218,6 @@
 
       <!-- LOGIN FORM -->
       <div class="form-section active" id="sectionLogin">
-        <div class="role-selector">
-          <button class="role-btn active" onclick="setRole('admin')">🔐 Admin RT</button>
-          <button class="role-btn" onclick="setRole('warga')">👤 Warga</button>
-        </div>
         <div class="form-group">
           <label>Username</label>
           <div class="input-wrap">
@@ -247,7 +233,7 @@
           </div>
         </div>
         <button class="login-btn" onclick="doLogin()">Masuk ke Sistem →</button>
-        <div class="alert-box alert-error" id="loginError">⚠️ Username atau password salah. Silakan coba lagi.</div>
+        <div class="alert-box alert-error" id="loginError"></div>
         <div class="login-footer">
           <strong>Demo Akun:</strong><br>
           Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123
@@ -350,7 +336,6 @@
   }
   initData();
 
-  let currentRole = 'admin';
   let currentTab = 'login';
 
   function switchTab(tab) {
@@ -362,21 +347,11 @@
     document.getElementById('sectionDaftar').classList.toggle('active', tab === 'daftar');
     if (tab === 'login') {
       document.getElementById('cardTitle').textContent = 'Masuk';
-      document.getElementById('cardSubtitle').textContent = 'Pilih peran dan masukkan kredensial Anda';
+      document.getElementById('cardSubtitle').textContent = 'Masukkan username dan password Anda';
     } else {
       document.getElementById('cardTitle').textContent = 'Daftar';
       document.getElementById('cardSubtitle').textContent = 'Buat akun baru sebagai warga RT';
     }
-  }
-
-  function setRole(role) {
-    currentRole = role;
-    document.querySelectorAll('.role-btn').forEach((b, i) => {
-      b.classList.toggle('active', (role === 'admin' && i === 0) || (role === 'warga' && i === 1));
-    });
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('loginError').style.display = 'none';
   }
 
   function doLogin() {
@@ -386,29 +361,31 @@
     err.style.display = 'none';
     if (!u || !p) { err.style.display = 'block'; err.textContent = '⚠️ Username dan password wajib diisi.'; return; }
 
-    if (currentRole === 'admin') {
-      if (u === 'admin' && p === 'admin123') {
-        sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT', username: 'admin' }));
-        window.location.href = 'admin.html';
-      } else { err.style.display = 'block'; err.textContent = '⚠️ Username atau password admin salah.'; }
+    // Cek admin dulu
+    if (u === 'admin' && p === 'admin123') {
+      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT', username: 'admin' }));
+      window.location.href = 'admin.html';
+      return;
+    }
+
+    // Cek warga aktif
+    const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
+    const found = warga.find(w => w.username === u && w.password === p);
+    if (found) {
+      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'warga', nama: found.nama, id: found.id, username: found.username }));
+      window.location.href = 'warga.html';
+      return;
+    }
+
+    // Cek apakah masih pending
+    const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
+    const isPending = pending.find(x => x.username === u);
+    if (isPending) {
+      err.style.display = 'block';
+      err.textContent = '⏳ Akun Anda masih menunggu persetujuan Admin RT.';
     } else {
-      const warga = JSON.parse(localStorage.getItem('simart_warga') || '[]');
-      const found = warga.find(w => w.username === u && w.password === p);
-      if (found) {
-        sessionStorage.setItem('simart_user', JSON.stringify({ role: 'warga', nama: found.nama, id: found.id, username: found.username }));
-        window.location.href = 'warga.html';
-      } else {
-        // Check if pending
-        const pending = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
-        const isPending = pending.find(x => x.username === u);
-        if (isPending) {
-          err.style.display = 'block';
-          err.textContent = '⏳ Akun Anda masih menunggu persetujuan Admin RT.';
-        } else {
-          err.style.display = 'block';
-          err.textContent = '⚠️ Username atau password salah.';
-        }
-      }
+      err.style.display = 'block';
+      err.textContent = '⚠️ Username atau password salah. Silakan coba lagi.';
     }
   }
 
