@@ -567,10 +567,10 @@
     const recent = s.slice(-4).reverse();
     rs.innerHTML = !recent.length
       ? '<div class="empty-state"><div class="icon">📭</div><p>Belum ada surat</p></div>'
-      : recent.map(s => `
+      : recent.map(item => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);">
-          <div><div style="font-size:14px;font-weight:600;">${s.nama}</div><div style="font-size:12px;color:var(--muted);">${s.jenis} • ${s.tanggal}</div></div>
-          <span class="badge badge-${s.status}">${s.status==='pending'?'pending':s.status==='approved'?'disetujui':'ditolak'}</span>
+          <div><div style="font-size:14px;font-weight:600;">${item.nama}</div><div style="font-size:12px;color:var(--muted);">${item.jenis} • ${item.tanggal}</div></div>
+          <span class="badge badge-${item.status}">${item.status==='pending'?'pending':item.status==='approved'?'disetujui':'ditolak'}</span>
         </div>`).join('');
 
     const ra = document.getElementById('recentAnn');
@@ -918,8 +918,8 @@
               <div style="font-size:12px;color:var(--muted);">Mendaftar: ${r.tanggal_daftar||'-'}</div>
             </div>
             <div class="reg-item-actions">
-              <button class="btn btn-success btn-sm" onclick="approveReg(${r.id})">✅ Setujui</button>
-              <button class="btn btn-danger btn-sm" onclick="rejectReg(${r.id})">❌ Tolak</button>
+              <button class="btn btn-success btn-sm" onclick="approveReg('${r.id}')">✅ Setujui</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectReg('${r.id}')">❌ Tolak</button>
             </div>
           </div>
           <div class="reg-meta">
@@ -934,21 +934,21 @@
   }
   function approveReg(id) {
     const pending = getPendingReg();
-    const reg = pending.find(x=>x.id===id);
+    const reg = pending.find(x => x.id == id);  // == intentional: id may be string or number
     if (!reg) return;
     const warga = getWarga();
     const newId = warga.length ? Math.max(...warga.map(x=>x.id))+1 : 1;
     warga.push({ id:newId, nama:reg.nama, nik:reg.nik, alamat:reg.alamat, telepon:reg.telepon, status:reg.status, username:reg.username, password:reg.password });
     setWarga(warga);
-    setPendingReg(pending.filter(x=>x.id!==id));
+    setPendingReg(pending.filter(x => x.id != id));
     renderPendaftaran(); updateBadges();
     showToast(`${reg.nama} berhasil disetujui sebagai warga!`);
   }
   function rejectReg(id) {
     if (!confirm('Tolak pendaftaran ini?')) return;
-    setPendingReg(getPendingReg().filter(x=>x.id!==id));
+    setPendingReg(getPendingReg().filter(x => x.id != id));
     renderPendaftaran(); updateBadges();
-    showToast('Pendaftaran ditolak','error');
+    showToast('Pendaftaran ditolak', 'error');
   }
 
   function logout() {
