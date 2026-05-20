@@ -148,7 +148,7 @@
   .alert-box {
     padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-top: 14px; display: none;
   }
-  .alert-error { background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);color:#ff6b7a; }
+  .alert-error   { background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);color:#ff6b7a; }
   .alert-success { background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);color:#3fb950; }
 
   .login-footer {
@@ -221,14 +221,14 @@
           <label>Username</label>
           <div class="input-wrap">
             <span class="input-icon">👤</span>
-            <input type="text" id="loginUsername" placeholder="Masukkan username" autocomplete="off">
+            <input type="text" id="username" placeholder="Masukkan username" autocomplete="off">
           </div>
         </div>
         <div class="form-group">
           <label>Password</label>
           <div class="input-wrap">
             <span class="input-icon">🔑</span>
-            <input type="password" id="loginPassword" placeholder="Masukkan password">
+            <input type="password" id="password" placeholder="Masukkan password">
           </div>
         </div>
         <button class="login-btn" onclick="doLogin()">Masuk ke Sistem →</button>
@@ -302,7 +302,7 @@
           </div>
         </div>
         <button class="login-btn" onclick="doDaftar()">Kirim Pendaftaran →</button>
-        <div class="alert-box alert-error" id="daftarError"></div>
+        <div class="alert-box alert-error"   id="daftarError"></div>
         <div class="alert-box alert-success" id="daftarSuccess"></div>
       </div>
 
@@ -310,11 +310,15 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPT REGULER — UI logic & fungsi login/daftar
+     (Globals Firebase: window.db, window.fbRef, dll.
+      diisi oleh script module Firebase di bawah)
+════════════════════════════════════════════════════════ -->
 <script>
-  // ─── Inisialisasi data default ke localStorage ───────────────────────────
+  // ─── Inisialisasi data default localStorage ───────────────────────────────
   function initData() {
     if (localStorage.getItem('simart_init')) return;
-
     localStorage.setItem('simart_warga', JSON.stringify([
       { id:1, nama:'Anwar Maulana', nik:'3201012345670001', alamat:'Jl. Mawar No. 1', telepon:'08123456789', status:'Tetap', username:'warga1', password:'warga123' },
       { id:2, nama:'Siti Rahayu',   nik:'3201012345670002', alamat:'Jl. Melati No. 3', telepon:'08987654321', status:'Tetap', username:'warga2', password:'warga123' }
@@ -330,8 +334,6 @@
     localStorage.setItem('simart_init', '1');
   }
   initData();
-
-  // Pastikan key pending_reg selalu ada
   if (!localStorage.getItem('simart_pending_reg')) {
     localStorage.setItem('simart_pending_reg', JSON.stringify([]));
   }
@@ -346,16 +348,16 @@
     });
     document.getElementById('sectionLogin').classList.toggle('active', tab === 'login');
     document.getElementById('sectionDaftar').classList.toggle('active', tab === 'daftar');
-    document.getElementById('cardTitle').textContent     = tab === 'login' ? 'Masuk'  : 'Daftar';
-    document.getElementById('cardSubtitle').textContent  = tab === 'login'
+    document.getElementById('cardTitle').textContent    = tab === 'login' ? 'Masuk' : 'Daftar';
+    document.getElementById('cardSubtitle').textContent = tab === 'login'
       ? 'Masukkan username dan password Anda'
       : 'Buat akun baru sebagai warga RT';
   }
 
   // ─── Login ────────────────────────────────────────────────────────────────
-  function doLogin() {
-    const u   = document.getElementById('loginUsername').value.trim();
-    const p   = document.getElementById('loginPassword').value.trim();
+  async function doLogin() {
+    const u   = document.getElementById('username').value.trim();
+    const p   = document.getElementById('password').value.trim();
     const err = document.getElementById('loginError');
     err.style.display = 'none';
 
@@ -365,33 +367,52 @@
       return;
     }
 
-    // Admin
+    // Admin (lokal)
     if (u === 'admin' && p === 'admin123') {
       sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT' }));
       window.location.href = 'admin.html';
       return;
     }
 
-    // Warga — cek di localStorage
-    const wargaList = JSON.parse(localStorage.getItem('simart_warga') || '[]');
-    const found = wargaList.find(w => w.username === u);
-    if (found && found.password === p) {
-      sessionStorage.setItem('simart_user', JSON.stringify({
-        role: 'warga',
-        nama: found.nama,
-        id: found.id,
-        username: found.username
-      }));
-      window.location.href = 'warga.html';
-      return;
+    // Warga — cek di Firebase
+    try {
+      const snapshot = await fbGet(fbChild(fbRef(db), 'warga/' + u));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        if (data.password === p) {
+          sessionStorage.setItem('simart_user', JSON.stringify({
+            role: 'warga',
+            nama: data.nama,
+            id: data.id,
+            username: u
+          }));
+          window.location.href = 'warga.html';
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Firebase error, fallback ke localStorage:', e);
+      // Fallback: cek localStorage jika Firebase gagal
+      const wargaList = JSON.parse(localStorage.getItem('simart_warga') || '[]');
+      const found = wargaList.find(w => w.username === u);
+      if (found && found.password === p) {
+        sessionStorage.setItem('simart_user', JSON.stringify({
+          role: 'warga',
+          nama: found.nama,
+          id: found.id,
+          username: found.username
+        }));
+        window.location.href = 'warga.html';
+        return;
+      }
     }
 
     err.style.display = 'block';
-    err.textContent = 'Username atau password salah, atau akun belum disetujui admin';
+    err.textContent = 'Akun belum disetujui atau username/password salah';
   }
 
-  // ─── Daftar ───────────────────────────────────────────────────────────────
-  function doDaftar() {
+  // ─── Daftar Warga ─────────────────────────────────────────────────────────
+  async function doDaftar() {
     const nama     = document.getElementById('rNama').value.trim();
     const nik      = document.getElementById('rNik').value.trim();
     const alamat   = document.getElementById('rAlamat').value.trim();
@@ -421,21 +442,24 @@
       return;
     }
 
-    const wargaList  = JSON.parse(localStorage.getItem('simart_warga')       || '[]');
-    const pendingList = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
+    const tanggal_daftar = new Date().toISOString().split('T')[0];
 
-    if (wargaList.find(w => w.username === username) || pendingList.find(p => p.username === username)) {
-      errEl.style.display = 'block';
-      errEl.textContent = 'Username sudah digunakan, pilih username lain';
-      return;
+    // Simpan ke Firebase (pending_reg)
+    try {
+      await fbSet(fbRef(db, 'pending_reg/' + username), {
+        nama, nik, alamat, telepon, status, username, password, tanggal_daftar
+      });
+    } catch (e) {
+      console.warn('Firebase set error:', e);
     }
 
-    const newId = pendingList.length ? Math.max(...pendingList.map(x => x.id)) + 1 : 1;
-    pendingList.push({
-      id: newId, nama, nik, alamat, telepon, status, username, password,
-      tanggal_daftar: new Date().toISOString().split('T')[0]
-    });
-    localStorage.setItem('simart_pending_reg', JSON.stringify(pendingList));
+    // Simpan juga ke localStorage agar admin.html bisa membaca
+    const pendingList = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
+    if (!pendingList.find(p => p.username === username)) {
+      const newId = pendingList.length ? Math.max(...pendingList.map(x => x.id)) + 1 : 1;
+      pendingList.push({ id: newId, nama, nik, alamat, telepon, status, username, password, tanggal_daftar });
+      localStorage.setItem('simart_pending_reg', JSON.stringify(pendingList));
+    }
 
     succEl.style.display = 'block';
     succEl.textContent = '✅ Pendaftaran dikirim! Tunggu persetujuan admin RT.';
@@ -471,5 +495,36 @@
     pc.appendChild(particle);
   }
 </script>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPT MODULE — Firebase (harus tag terpisah, tidak
+     boleh bersarang di dalam <script> biasa di atas)
+════════════════════════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCq5imFX1yB2fc3QA0vyEi3lSQZJ1B7ur4",
+    authDomain:        "simart-a4cec.firebaseapp.com",
+    databaseURL:       "https://simart-a4cec-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:         "simart-a4cec",
+    storageBucket:     "simart-a4cec.firebasestorage.app",
+    messagingSenderId: "267839232734",
+    appId:             "1:267839232734:web:4125baa50e4d43c02dc04f",
+    measurementId:     "G-3ML8ZP8KL2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // Ekspor ke window agar bisa dipakai fungsi reguler di atas
+  window.db      = db;
+  window.fbRef   = ref;
+  window.fbSet   = set;
+  window.fbGet   = get;
+  window.fbChild = child;
+</script>
+
 </body>
 </html>
