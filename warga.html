@@ -512,8 +512,8 @@
 <script>
   // Auth
   const user = JSON.parse(sessionStorage.getItem('simart_user') || 'null');
-  if (!user || user.role !== 'warga') window.location.href = 'index.html';
-  document.getElementById('userName').textContent = user.nama;
+  if (!user || user.role !== 'warga') { window.location.href = 'index.html'; }
+  document.getElementById('userName').textContent = user.nama || 'Warga';
 
   // Data helpers
   const getWarga = () => JSON.parse(localStorage.getItem('simart_warga') || '[]');
@@ -562,7 +562,7 @@
   // BERANDA
   function renderBeranda() {
     document.getElementById('wBannerName').textContent = user.nama;
-    const mySurat = getSurat().filter(x => x.warga_id === user.id);
+    const mySurat = getSurat().filter(x => x.warga_id === user.id || x.warga_username === user.username);
     const pending = mySurat.filter(x => x.status === 'pending').length;
     const anns = getPengumuman();
     document.getElementById('qsSurat').textContent = mySurat.length;
@@ -588,7 +588,7 @@
 
   // SURAT
   function renderSuratWarga() {
-    const mySurat = getSurat().filter(x => x.warga_id === user.id);
+    const mySurat = getSurat().filter(x => x.warga_id === user.id || x.warga_username === user.username);
     const tb = document.getElementById('tabelSuratWarga');
     if (!mySurat.length) {
       tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><h4>Belum ada surat</h4><p>Klik "Ajukan Surat" untuk membuat pengajuan</p></div></td></tr>`;
@@ -610,7 +610,7 @@
   }
   function bukaAjukanSurat() {
     // Pre-fill dari data profil warga
-    const w = getWarga().find(x => x.id === user.id);
+    const w = getWarga().find(x => x.id === user.id || x.username === user.username);
     if (w) {
       document.getElementById('sNama').value = w.nama || '';
       document.getElementById('sNik').value = w.nik || '';
@@ -645,7 +645,7 @@
     const data = getSurat();
     const newId = data.length ? Math.max(...data.map(x=>x.id))+1 : 1;
     data.push({
-      id: newId, warga_id: user.id, nama, jenis,
+      id: newId, warga_id: user.id, warga_username: user.username, nama, jenis,
       tanggal: new Date().toISOString().split('T')[0],
       status: 'pending', keterangan: ket,
       // data surat lengkap
@@ -815,7 +815,7 @@
 
   // PROFIL
   function renderProfil() {
-    const w = getWarga().find(x => x.id === user.id);
+    const w = getWarga().find(x => x.id === user.id || x.username === user.username);
     if (!w) return;
     document.getElementById('editProfileForm').classList.remove('show');
     document.getElementById('profileCard').style.display = 'block';
@@ -868,7 +868,7 @@
   }
 
   function openEditProfile() {
-    const w = getWarga().find(x => x.id === user.id);
+    const w = getWarga().find(x => x.id === user.id || x.username === user.username);
     if (!w) return;
     document.getElementById('epNama').value = w.nama;
     document.getElementById('epNik').value = w.nik;
@@ -897,7 +897,7 @@
     if (!alamat || !telepon) { showToast('Alamat dan telepon wajib diisi','error'); return; }
 
     const warga = getWarga();
-    const idx = warga.findIndex(x => x.id === user.id);
+    const idx = warga.findIndex(x => x.id === user.id || x.username === user.username);
     if (idx === -1) return;
 
     let update = { ...warga[idx], alamat, telepon };
