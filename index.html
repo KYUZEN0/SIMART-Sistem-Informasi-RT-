@@ -6,525 +6,265 @@
 <title>SIMART — Sistem Informasi RT</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --primary: #1a1a2e;
-    --accent: #e94560;
-    --accent2: #0f3460;
-    --gold: #f5a623;
-    --white: #ffffff;
-    --gray: #8892b0;
-    --light: #ccd6f6;
-    --glass: rgba(255,255,255,0.05);
-    --glass-border: rgba(255,255,255,0.1);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--primary);
-    min-height: 100vh;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-  }
-  .bg-animated {
-    position: fixed; inset: 0; z-index: 0;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    overflow: hidden;
-  }
-  .bg-animated::before {
-    content: ''; position: absolute;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(233,69,96,0.15) 0%, transparent 70%);
-    top: -200px; right: -100px; border-radius: 50%;
-    animation: float1 8s ease-in-out infinite;
-  }
-  .bg-animated::after {
-    content: ''; position: absolute;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(245,166,35,0.1) 0%, transparent 70%);
-    bottom: -100px; left: 10%; border-radius: 50%;
-    animation: float2 10s ease-in-out infinite;
-  }
-  .grid-overlay {
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 50px 50px; z-index: 0;
-  }
-  @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-50px,50px) scale(1.1);} }
-  @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(50px,-30px) scale(0.9);} }
-  @keyframes pulse  { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.5);} }
-  @keyframes drift  { 0%{transform:translateY(100vh) rotate(0deg);opacity:0;} 10%{opacity:1;} 90%{opacity:1;} 100%{transform:translateY(-100px) rotate(720deg);opacity:0;} }
+  :root{--primary:#1a1a2e;--accent:#e94560;--gold:#f5a623;--white:#fff;--gray:#8892b0;--light:#ccd6f6;--glass:rgba(255,255,255,0.05);--gb:rgba(255,255,255,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--primary);min-height:100vh;display:flex;overflow:hidden;}
+  .bg{position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);overflow:hidden;}
+  .bg::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(233,69,96,0.15),transparent 70%);top:-200px;right:-100px;border-radius:50%;animation:f1 8s ease-in-out infinite;}
+  .bg::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(245,166,35,0.1),transparent 70%);bottom:-100px;left:10%;border-radius:50%;animation:f2 10s ease-in-out infinite;}
+  .grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:50px 50px;z-index:0;}
+  @keyframes f1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,50px) scale(1.1)}}
+  @keyframes f2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-30px) scale(0.9)}}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+  @keyframes drift{0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) rotate(720deg);opacity:0}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .particle{position:absolute;border-radius:50%;animation:drift linear infinite;opacity:0;}
 
-  .login-wrapper {
-    position: relative; z-index: 1;
-    display: flex; width: 100%; min-height: 100vh;
-  }
+  /* Loading */
+  #loading{position:fixed;inset:0;z-index:9999;background:var(--primary);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .4s;}
+  #loading .logo{font-family:'Fraunces',serif;font-size:36px;color:#fff;}
+  #loading .logo span{color:var(--accent);font-style:italic;}
+  #loading p{color:var(--gray);font-size:13px;}
+  .spinner{width:34px;height:34px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 
-  /* LEFT PANEL */
-  .left-panel {
-    flex: 1; display: flex; flex-direction: column;
-    justify-content: center; padding: 60px 80px; position: relative;
-  }
-  .brand-badge {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--glass); border: 1px solid var(--glass-border);
-    padding: 8px 16px; border-radius: 100px; margin-bottom: 40px; width: fit-content;
-  }
-  .brand-badge .dot { width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite; }
-  .brand-badge span { color:var(--gray);font-size:13px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase; }
-  .hero-title { font-family:'Fraunces',serif;font-size:clamp(52px,5vw,80px);line-height:1.05;color:var(--white);margin-bottom:24px; }
-  .hero-title .accent { color:var(--accent);font-style:italic; }
-  .hero-desc { color:var(--gray);font-size:16px;line-height:1.8;max-width:440px;margin-bottom:50px; }
-  .features-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:440px; }
-  .feature-card {
-    background:var(--glass);border:1px solid var(--glass-border);
-    border-radius:16px;padding:20px;transition:all 0.3s ease;
-  }
-  .feature-card:hover { background:rgba(255,255,255,0.08);border-color:rgba(233,69,96,0.3);transform:translateY(-2px); }
-  .feature-card .icon { font-size:28px;margin-bottom:8px; }
-  .feature-card .label { color:var(--light);font-size:13px;font-weight:600;letter-spacing:0.02em; }
-  .feature-card .sublabel { color:var(--gray);font-size:11px;margin-top:2px; }
+  /* Layout */
+  .wrap{position:relative;z-index:1;display:flex;width:100%;min-height:100vh;}
+  .left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px 80px;}
+  .badge{display:inline-flex;align-items:center;gap:10px;background:var(--glass);border:1px solid var(--gb);padding:8px 16px;border-radius:100px;margin-bottom:40px;width:fit-content;}
+  .badge .dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+  .badge span{color:var(--gray);font-size:13px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;}
+  .hero{font-family:'Fraunces',serif;font-size:clamp(52px,5vw,80px);line-height:1.05;color:#fff;margin-bottom:24px;}
+  .hero .ac{color:var(--accent);font-style:italic;}
+  .desc{color:var(--gray);font-size:16px;line-height:1.8;max-width:440px;margin-bottom:50px;}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:440px;}
+  .fc{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:20px;transition:all .3s;}
+  .fc:hover{background:rgba(255,255,255,.08);border-color:rgba(233,69,96,.3);transform:translateY(-2px);}
+  .fc .ic{font-size:28px;margin-bottom:8px;}
+  .fc .lb{color:var(--light);font-size:13px;font-weight:600;}
+  .fc .sl{color:var(--gray);font-size:11px;margin-top:2px;}
 
-  /* RIGHT PANEL */
-  .right-panel {
-    width: 480px; display: flex; align-items: center; justify-content: center;
-    padding: 40px; background: rgba(255,255,255,0.03);
-    border-left: 1px solid var(--glass-border); backdrop-filter: blur(20px);
-    overflow-y: auto;
-  }
-  .login-card { width: 100%; max-width: 380px; }
-  .login-card h2 { font-family:'Fraunces',serif;font-size:36px;color:var(--white);margin-bottom:6px; }
-  .login-card .subtitle { color:var(--gray);font-size:14px;margin-bottom:28px; }
+  /* Right panel */
+  .right{width:480px;display:flex;align-items:center;justify-content:center;padding:40px;background:rgba(255,255,255,.03);border-left:1px solid var(--gb);backdrop-filter:blur(20px);overflow-y:auto;}
+  .card{width:100%;max-width:380px;}
+  .card h2{font-family:'Fraunces',serif;font-size:36px;color:#fff;margin-bottom:6px;}
+  .card .sub{color:var(--gray);font-size:14px;margin-bottom:28px;}
+  .tabs{display:flex;background:rgba(0,0,0,.2);padding:4px;border-radius:12px;margin-bottom:24px;}
+  .tab{flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;transition:all .3s;background:transparent;color:var(--gray);}
+  .tab.on{background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(233,69,96,.4);}
+  .sec{display:none;}
+  .sec.on{display:block;}
+  .fg{margin-bottom:18px;}
+  .fg label{display:block;color:var(--light);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;}
+  .iw{position:relative;}
+  .iw .ii{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray);pointer-events:none;}
+  .fg input,.fg select{width:100%;padding:13px 16px 13px 44px;background:rgba(255,255,255,.06);border:1px solid var(--gb);border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;transition:all .3s;outline:none;-webkit-appearance:none;}
+  .fg input:focus,.fg select:focus{border-color:var(--accent);background:rgba(233,69,96,.05);box-shadow:0 0 0 3px rgba(233,69,96,.1);}
+  .fg input::placeholder{color:rgba(136,146,176,.6);}
+  .fg select option{background:#1a1a2e;}
+  .r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#c0392b);border:none;border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:4px;}
+  .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(233,69,96,.4);}
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .al{padding:12px 16px;border-radius:10px;font-size:13px;margin-top:14px;display:none;}
+  .al.er{background:rgba(233,69,96,.1);border:1px solid rgba(233,69,96,.3);color:#ff6b7a;}
+  .al.ok{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:#3fb950;}
+  .note{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:12px 14px;font-size:12px;color:rgba(245,166,35,.9);margin-bottom:18px;line-height:1.6;}
+  .foot{margin-top:24px;padding-top:18px;border-top:1px solid var(--gb);text-align:center;color:var(--gray);font-size:12px;}
+  .foot strong{color:var(--light);}
 
-  /* TABS */
-  .tab-switcher {
-    display: flex; gap: 0; margin-bottom: 24px;
-    background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px;
-  }
-  .tab-btn {
-    flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
-    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600;
-    transition: all 0.3s ease; background: transparent; color: var(--gray);
-  }
-  .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(233,69,96,0.4); }
-
-  /* FORM */
-  .form-section { display: none; }
-  .form-section.active { display: block; }
-  .form-group { margin-bottom: 18px; position: relative; }
-  .form-group label { display:block;color:var(--light);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:0.02em; }
-  .input-wrap { position: relative; }
-  .input-wrap .input-icon { position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray);pointer-events:none; }
-  .form-group input, .form-group select {
-    width: 100%; padding: 13px 16px 13px 44px;
-    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
-    border-radius: 12px; color: var(--white);
-    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
-    transition: all 0.3s ease; outline: none; -webkit-appearance: none;
-  }
-  .form-group input:focus, .form-group select:focus {
-    border-color: var(--accent); background: rgba(233,69,96,0.05);
-    box-shadow: 0 0 0 3px rgba(233,69,96,0.1);
-  }
-  .form-group input::placeholder { color: rgba(136,146,176,0.6); }
-  .form-group select option { background: #1a1a2e; }
-  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .login-btn {
-    width: 100%; padding: 15px;
-    background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
-    border: none; border-radius: 12px; color: white;
-    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
-    cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.02em;
-    margin-top: 4px; position: relative; overflow: hidden;
-  }
-  .login-btn::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 100%);opacity:0;transition:opacity 0.3s; }
-  .login-btn:hover { transform:translateY(-2px);box-shadow:0 10px 30px rgba(233,69,96,0.4); }
-  .login-btn:hover::before { opacity:1; }
-  .login-btn:active { transform:translateY(0); }
-
-  .alert-box {
-    padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-top: 14px; display: none;
-  }
-  .alert-error   { background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);color:#ff6b7a; }
-  .alert-success { background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);color:#3fb950; }
-
-  .login-footer {
-    margin-top: 28px; padding-top: 20px;
-    border-top: 1px solid var(--glass-border);
-    text-align: center; color: var(--gray); font-size: 12px;
-  }
-  .login-footer strong { color: var(--light); }
-
-  .info-note {
-    background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.25);
-    border-radius: 10px; padding: 12px 14px; font-size: 12px; color: rgba(245,166,35,0.9);
-    margin-bottom: 20px; line-height: 1.6;
-  }
-
-  /* Particles */
-  .particles { position:fixed;inset:0;z-index:0;pointer-events:none; }
-  .particle { position:absolute;border-radius:50%;animation:drift linear infinite;opacity:0; }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    .left-panel { display: none; }
-    .right-panel { width: 100%; border: none; padding: 32px 24px; }
-    body { overflow: auto; }
-  }
-  @media (max-width: 480px) {
-    .right-panel { padding: 24px 20px; }
-    .login-card h2 { font-size: 28px; }
-    .form-row-2 { grid-template-columns: 1fr; gap: 0; }
-  }
+  @media(max-width:900px){.left{display:none;}.right{width:100%;border:none;padding:32px 24px;}body{overflow:auto;}}
+  @media(max-width:480px){.right{padding:24px 20px;}.card h2{font-size:28px;}.r2{grid-template-columns:1fr;gap:0;}}
 </style>
 </head>
 <body>
-<div class="bg-animated"></div>
-<div class="grid-overlay"></div>
-<div class="particles" id="particles"></div>
+<div id="loading"><div class="logo">SI<span>MART</span></div><div class="spinner"></div><p>Menghubungkan ke server...</p></div>
+<div class="bg"></div><div class="grid"></div><div class="particles" id="particles"></div>
 
-<div class="login-wrapper">
-  <!-- Left Panel -->
-  <div class="left-panel">
-    <div class="brand-badge">
-      <div class="dot"></div>
-      <span>Sistem Informasi RT Digital</span>
-    </div>
-    <h1 class="hero-title">Kelola RT<br>dengan <span class="accent">Cerdas</span><br>&amp; Efisien</h1>
-    <p class="hero-desc">Platform administrasi RT modern yang memudahkan pengelolaan data warga, surat-menyurat, keuangan kas, dan pengumuman dalam satu sistem terintegrasi.</p>
-    <div class="features-grid">
-      <div class="feature-card"><div class="icon">👥</div><div class="label">Data Warga</div><div class="sublabel">Kelola profil warga RT</div></div>
-      <div class="feature-card"><div class="icon">📄</div><div class="label">Surat Digital</div><div class="sublabel">Pengajuan &amp; cetak surat</div></div>
-      <div class="feature-card"><div class="icon">💰</div><div class="label">Kas RT</div><div class="sublabel">Catat pemasukan &amp; pengeluaran</div></div>
-      <div class="feature-card"><div class="icon">📢</div><div class="label">Pengumuman</div><div class="sublabel">Informasi warga terkini</div></div>
+<div class="wrap">
+  <div class="left">
+    <div class="badge"><div class="dot"></div><span>Sistem Informasi RT Digital</span></div>
+    <h1 class="hero">Kelola RT<br>dengan <span class="ac">Cerdas</span><br>&amp; Efisien</h1>
+    <p class="desc">Platform administrasi RT modern yang memudahkan pengelolaan data warga, surat-menyurat, keuangan kas, dan pengumuman dalam satu sistem terintegrasi.</p>
+    <div class="feat">
+      <div class="fc"><div class="ic">👥</div><div class="lb">Data Warga</div><div class="sl">Kelola profil warga RT</div></div>
+      <div class="fc"><div class="ic">📄</div><div class="lb">Surat Digital</div><div class="sl">Pengajuan &amp; cetak surat</div></div>
+      <div class="fc"><div class="ic">💰</div><div class="lb">Kas RT</div><div class="sl">Catat pemasukan &amp; pengeluaran</div></div>
+      <div class="fc"><div class="ic">📢</div><div class="lb">Pengumuman</div><div class="sl">Informasi warga terkini</div></div>
     </div>
   </div>
 
-  <!-- Right Panel -->
-  <div class="right-panel">
-    <div class="login-card">
-      <h2 id="cardTitle">Masuk</h2>
-      <p class="subtitle" id="cardSubtitle">Masukkan username dan password Anda</p>
-
-      <!-- Tab Switcher -->
-      <div class="tab-switcher">
-        <button class="tab-btn active" onclick="switchTab('login')">🔑 Masuk</button>
-        <button class="tab-btn" onclick="switchTab('daftar')">📝 Daftar Warga</button>
+  <div class="right">
+    <div class="card">
+      <h2 id="cTitle">Masuk</h2>
+      <p class="sub" id="cSub">Masukkan username dan password Anda</p>
+      <div class="tabs">
+        <button class="tab on" onclick="switchTab('login')">🔑 Masuk</button>
+        <button class="tab" onclick="switchTab('daftar')">📝 Daftar Warga</button>
       </div>
 
-      <!-- LOGIN FORM -->
-      <div class="form-section active" id="sectionLogin">
-        <div class="form-group">
-          <label>Username</label>
-          <div class="input-wrap">
-            <span class="input-icon">👤</span>
-            <input type="text" id="username" placeholder="Masukkan username" autocomplete="off">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <div class="input-wrap">
-            <span class="input-icon">🔑</span>
-            <input type="password" id="password" placeholder="Masukkan password">
-          </div>
-        </div>
-        <button class="login-btn" onclick="doLogin()">Masuk ke Sistem →</button>
-        <div class="alert-box alert-error" id="loginError"></div>
-        <div class="login-footer">
-          <strong>Demo Akun:</strong><br>
-          Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123
-        </div>
+      <!-- LOGIN -->
+      <div class="sec on" id="secLogin">
+        <div class="fg"><label>Username</label><div class="iw"><span class="ii">👤</span><input type="text" id="uname" placeholder="Masukkan username" autocomplete="off"></div></div>
+        <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔑</span><input type="password" id="upass" placeholder="Masukkan password"></div></div>
+        <button class="btn" id="btnLogin" onclick="doLogin()" disabled>Masuk ke Sistem →</button>
+        <div class="al er" id="errLogin"></div>
+        <div class="foot"><strong>Demo:</strong> Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123</div>
       </div>
 
-      <!-- REGISTER FORM -->
-      <div class="form-section" id="sectionDaftar">
-        <div class="info-note">
-          📋 Pendaftaran Anda akan diverifikasi oleh Admin RT terlebih dahulu sebelum bisa login.
+      <!-- DAFTAR -->
+      <div class="sec" id="secDaftar">
+        <div class="note">📋 Pendaftaran Anda akan diverifikasi oleh Admin RT sebelum bisa login.</div>
+        <div class="fg"><label>Nama Lengkap</label><div class="iw"><span class="ii">👤</span><input type="text" id="rNama" placeholder="Nama sesuai KTP"></div></div>
+        <div class="fg"><label>NIK (16 digit)</label><div class="iw"><span class="ii">🪪</span><input type="text" id="rNik" placeholder="Nomor Induk Kependudukan" maxlength="16"></div></div>
+        <div class="fg"><label>Alamat</label><div class="iw"><span class="ii">🏠</span><input type="text" id="rAlamat" placeholder="Alamat lengkap di RT"></div></div>
+        <div class="r2">
+          <div class="fg"><label>No. Telepon</label><div class="iw"><span class="ii">📱</span><input type="text" id="rTel" placeholder="08xxxxxxxxxx"></div></div>
+          <div class="fg"><label>Status Hunian</label><div class="iw"><span class="ii">🏘️</span><select id="rStatus"><option value="Tetap">Tetap</option><option value="Kontrak">Kontrak</option><option value="Kost">Kost</option></select></div></div>
         </div>
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <div class="input-wrap">
-            <span class="input-icon">👤</span>
-            <input type="text" id="rNama" placeholder="Nama sesuai KTP">
-          </div>
+        <div class="r2">
+          <div class="fg"><label>Username</label><div class="iw"><span class="ii">🔤</span><input type="text" id="rUser" placeholder="Username login"></div></div>
+          <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔒</span><input type="password" id="rPass" placeholder="Min. 6 karakter"></div></div>
         </div>
-        <div class="form-group">
-          <label>NIK (16 digit)</label>
-          <div class="input-wrap">
-            <span class="input-icon">🪪</span>
-            <input type="text" id="rNik" placeholder="Nomor Induk Kependudukan" maxlength="16">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Alamat</label>
-          <div class="input-wrap">
-            <span class="input-icon">🏠</span>
-            <input type="text" id="rAlamat" placeholder="Alamat lengkap di RT">
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label>No. Telepon</label>
-            <div class="input-wrap">
-              <span class="input-icon">📱</span>
-              <input type="text" id="rTelepon" placeholder="08xxxxxxxxxx">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Status Hunian</label>
-            <div class="input-wrap">
-              <span class="input-icon">🏘️</span>
-              <select id="rStatus">
-                <option value="Tetap">Tetap</option>
-                <option value="Kontrak">Kontrak</option>
-                <option value="Kost">Kost</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label>Username</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔤</span>
-              <input type="text" id="rUsername" placeholder="Username login">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="rPassword" placeholder="Min. 6 karakter">
-            </div>
-          </div>
-        </div>
-        <button class="login-btn" onclick="doDaftar()">Kirim Pendaftaran →</button>
-        <div class="alert-box alert-error"   id="daftarError"></div>
-        <div class="alert-box alert-success" id="daftarSuccess"></div>
+        <button class="btn" id="btnDaftar" onclick="doDaftar()" disabled>Kirim Pendaftaran →</button>
+        <div class="al er" id="errDaftar"></div>
+        <div class="al ok" id="okDaftar"></div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCRIPT REGULER — UI logic & fungsi login/daftar
-     (Globals Firebase: window.db, window.fbRef, dll.
-      diisi oleh script module Firebase di bawah)
-════════════════════════════════════════════════════════ -->
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-database-compat.js"></script>
 <script>
-  // ─── Inisialisasi data default localStorage ───────────────────────────────
-  function initData() {
-    if (localStorage.getItem('simart_init')) return;
-    localStorage.setItem('simart_warga', JSON.stringify([
-      { id:1, nama:'Anwar Maulana', nik:'3201012345670001', alamat:'Jl. Mawar No. 1', telepon:'08123456789', status:'Tetap', username:'warga1', password:'warga123' },
-      { id:2, nama:'Siti Rahayu',   nik:'3201012345670002', alamat:'Jl. Melati No. 3', telepon:'08987654321', status:'Tetap', username:'warga2', password:'warga123' }
-    ]));
-    localStorage.setItem('simart_surat', JSON.stringify([
-      { id:1, warga_id:1, nama:'Anwar Maulana', jenis:'Usaha', tanggal:'2026-04-17', status:'pending', keterangan:'' }
-    ]));
-    localStorage.setItem('simart_kas', JSON.stringify([]));
-    localStorage.setItem('simart_pengumuman', JSON.stringify([
-      { id:1, judul:'Kerja Bakti Minggu Ini', tanggal:'2026-04-17', isi:'Seluruh warga dimohon hadir dalam kegiatan kerja bakti pada hari Minggu pukul 07.00 WIB.' }
-    ]));
-    localStorage.setItem('simart_pending_reg', JSON.stringify([]));
-    localStorage.setItem('simart_init', '1');
-  }
-  initData();
-  if (!localStorage.getItem('simart_pending_reg')) {
-    localStorage.setItem('simart_pending_reg', JSON.stringify([]));
-  }
+/* ============================================================
+   GANTI DENGAN CONFIG FIREBASE ANDA
+   Dapatkan di: console.firebase.google.com
+   Project Settings > General > Your apps > Web app > SDK setup
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBILdsgXojLJUanEf3gg6V5op2UAppRvDg",
+  authDomain: "simart-9fe1d.firebaseapp.com",
+  databaseURL: "https://simart-9fe1d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "simart-9fe1d",
+  storageBucket: "simart-9fe1d.firebasestorage.app",
+  messagingSenderId: "982502510613",
+  appId: "1:982502510613:web:5844528aca80948aee3e1c"
+};
 
-  // ─── Tab Switcher ─────────────────────────────────────────────────────────
-  let currentTab = 'login';
+/* Username & password admin — ubah sesuai keinginan */
+const ADMIN_U = "admin";
+const ADMIN_P = "admin123";
 
-  function switchTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'daftar' && i === 1));
-    });
-    document.getElementById('sectionLogin').classList.toggle('active', tab === 'login');
-    document.getElementById('sectionDaftar').classList.toggle('active', tab === 'daftar');
-    document.getElementById('cardTitle').textContent    = tab === 'login' ? 'Masuk' : 'Daftar';
-    document.getElementById('cardSubtitle').textContent = tab === 'login'
-      ? 'Masukkan username dan password Anda'
-      : 'Buat akun baru sebagai warga RT';
-  }
+/* ============================================================
+   PENTING: Atur Firebase Realtime Database Rules di console:
+   Pergi ke Realtime Database > Rules, lalu set:
+   {
+     "rules": {
+       ".read": true,
+       ".write": true
+     }
+   }
+   (Untuk produksi, gunakan rules yang lebih ketat)
+   ============================================================ */
+firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
 
-  // ─── Login ────────────────────────────────────────────────────────────────
-  async function doLogin() {
-    const u   = document.getElementById('username').value.trim();
-    const p   = document.getElementById('password').value.trim();
-    const err = document.getElementById('loginError');
-    err.style.display = 'none';
+let curTab = 'login';
 
-    if (!u || !p) {
-      err.style.display = 'block';
-      err.textContent = 'Username dan password wajib diisi';
-      return;
+function switchTab(t) {
+  curTab = t;
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',(t==='login'&&i===0)||(t==='daftar'&&i===1)));
+  document.getElementById('secLogin').classList.toggle('on', t==='login');
+  document.getElementById('secDaftar').classList.toggle('on', t==='daftar');
+  document.getElementById('cTitle').textContent = t==='login'?'Masuk':'Daftar';
+  document.getElementById('cSub').textContent   = t==='login'?'Masukkan username dan password Anda':'Buat akun baru sebagai warga RT';
+}
+
+async function doLogin() {
+  const u = document.getElementById('uname').value.trim();
+  const p = document.getElementById('upass').value.trim();
+  const err = document.getElementById('errLogin');
+  const btn = document.getElementById('btnLogin');
+  err.style.display='none';
+  if(!u||!p){showErr(err,'⚠️ Username dan password wajib diisi.');return;}
+  btn.textContent='Memeriksa...'; btn.disabled=true;
+  try {
+    if(u===ADMIN_U&&p===ADMIN_P){
+      sessionStorage.setItem('simart_user',JSON.stringify({role:'admin',nama:'Admin RT',username:'admin'}));
+      window.location.href='admin.html'; return;
     }
-
-    // Admin (lokal)
-    if (u === 'admin' && p === 'admin123') {
-      sessionStorage.setItem('simart_user', JSON.stringify({ role: 'admin', nama: 'Admin RT' }));
-      window.location.href = 'admin.html';
-      return;
-    }
-
-    // Warga — cek di Firebase
-    try {
-      const snapshot = await fbGet(fbChild(fbRef(db), 'warga/' + u));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        if (data.password === p) {
-          sessionStorage.setItem('simart_user', JSON.stringify({
-            role: 'warga',
-            nama: data.nama,
-            id: data.id,
-            username: u
-          }));
-          window.location.href = 'warga.html';
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn('Firebase error, fallback ke localStorage:', e);
-      // Fallback: cek localStorage jika Firebase gagal
-      const wargaList = JSON.parse(localStorage.getItem('simart_warga') || '[]');
-      const found = wargaList.find(w => w.username === u);
-      if (found && found.password === p) {
-        sessionStorage.setItem('simart_user', JSON.stringify({
-          role: 'warga',
-          nama: found.nama,
-          id: found.id,
-          username: found.username
-        }));
-        window.location.href = 'warga.html';
-        return;
+    const snap = await db.ref('simart/warga').once('value');
+    if(snap.exists()){
+      const found = Object.values(snap.val()).find(w=>w.username===u&&w.password===p);
+      if(found){
+        sessionStorage.setItem('simart_user',JSON.stringify({role:'warga',nama:found.nama,fbKey:found.fbKey,username:found.username}));
+        window.location.href='warga.html'; return;
       }
     }
+    const pSnap = await db.ref('simart/pending_reg').once('value');
+    if(pSnap.exists()&&Object.values(pSnap.val()).find(x=>x.username===u)){
+      showErr(err,'⏳ Akun Anda masih menunggu persetujuan Admin RT.'); return;
+    }
+    showErr(err,'⚠️ Username atau password salah. Silakan coba lagi.');
+  } catch(e){ showErr(err,'❌ Gagal terhubung ke server. Periksa koneksi internet.'); }
+  finally{ btn.textContent='Masuk ke Sistem →'; btn.disabled=false; }
+}
 
-    err.style.display = 'block';
-    err.textContent = 'Akun belum disetujui atau username/password salah';
+async function doDaftar() {
+  const nama=document.getElementById('rNama').value.trim(),nik=document.getElementById('rNik').value.trim(),
+    alamat=document.getElementById('rAlamat').value.trim(),tel=document.getElementById('rTel').value.trim(),
+    status=document.getElementById('rStatus').value,user=document.getElementById('rUser').value.trim(),
+    pass=document.getElementById('rPass').value.trim();
+  const err=document.getElementById('errDaftar'),ok=document.getElementById('okDaftar'),btn=document.getElementById('btnDaftar');
+  err.style.display='none'; ok.style.display='none';
+  if(!nama||!nik||!alamat||!tel||!user||!pass){showErr(err,'⚠️ Semua field wajib diisi.');return;}
+  if(nik.length<16){showErr(err,'⚠️ NIK harus 16 digit.');return;}
+  if(pass.length<6){showErr(err,'⚠️ Password minimal 6 karakter.');return;}
+  btn.textContent='Mengirim...'; btn.disabled=true;
+  try {
+    const [wSnap,pSnap]=await Promise.all([db.ref('simart/warga').once('value'),db.ref('simart/pending_reg').once('value')]);
+    const warga=wSnap.exists()?Object.values(wSnap.val()):[];
+    const pend=pSnap.exists()?Object.values(pSnap.val()):[];
+    if(warga.find(w=>w.username===user)||pend.find(w=>w.username===user)){showErr(err,'⚠️ Username sudah digunakan.');return;}
+    if(warga.find(w=>w.nik===nik)||pend.find(w=>w.nik===nik)){showErr(err,'⚠️ NIK sudah terdaftar.');return;}
+    const nr=db.ref('simart/pending_reg').push();
+    await nr.set({fbKey:nr.key,nama,nik,alamat,telepon:tel,status,username:user,password:pass,tanggal_daftar:new Date().toISOString().split('T')[0]});
+    ok.textContent='✅ Pendaftaran berhasil! Tunggu persetujuan Admin RT untuk bisa login.';
+    ok.style.display='block';
+    ['rNama','rNik','rAlamat','rTel','rUser','rPass'].forEach(id=>document.getElementById(id).value='');
+  } catch(e){ showErr(err,'❌ Gagal menyimpan. Periksa koneksi internet.'); }
+  finally{ btn.textContent='Kirim Pendaftaran →'; btn.disabled=false; }
+}
+
+function showErr(el,msg){el.textContent=msg;el.style.display='block';}
+
+async function init() {
+  try {
+    const snap=await db.ref('simart/initialized').once('value');
+    if(!snap.exists()){
+      const w1=db.ref('simart/warga').push(), w2=db.ref('simart/warga').push();
+      await w1.set({fbKey:w1.key,nama:'Anwar Maulana',nik:'3201012345670001',alamat:'Jl. Mawar No. 1',telepon:'08123456789',status:'Tetap',username:'warga1',password:'warga123'});
+      await w2.set({fbKey:w2.key,nama:'Siti Rahayu',nik:'3201012345670002',alamat:'Jl. Melati No. 3',telepon:'08987654321',status:'Tetap',username:'warga2',password:'warga123'});
+      const s1=db.ref('simart/surat').push();
+      await s1.set({fbKey:s1.key,warga_key:w1.key,nama:'Anwar Maulana',jenis:'Usaha',tanggal:'2026-04-17',status:'pending',keterangan:''});
+      const a1=db.ref('simart/pengumuman').push();
+      await a1.set({fbKey:a1.key,judul:'Kerja Bakti Minggu Ini',tanggal:'2026-04-17',isi:'Seluruh warga dimohon hadir dalam kegiatan kerja bakti pada hari Minggu pukul 07.00 WIB.'});
+      await db.ref('simart/initialized').set(true);
+    }
+  } catch(e){ console.error('Init error',e); }
+  finally {
+    document.getElementById('btnLogin').disabled=false;
+    document.getElementById('btnDaftar').disabled=false;
+    const lo=document.getElementById('loading');
+    lo.style.opacity='0'; setTimeout(()=>lo.style.display='none',400);
+    document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(curTab==='login')doLogin();else doDaftar();}});
+    const pc=document.getElementById('particles');
+    for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';const s=Math.random()*4+2;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${Math.random()>.5?'rgba(233,69,96,0.6)':'rgba(245,166,35,0.4)'};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;pc.appendChild(p);}
   }
-
-  // ─── Daftar Warga ─────────────────────────────────────────────────────────
-  async function doDaftar() {
-    const nama     = document.getElementById('rNama').value.trim();
-    const nik      = document.getElementById('rNik').value.trim();
-    const alamat   = document.getElementById('rAlamat').value.trim();
-    const telepon  = document.getElementById('rTelepon').value.trim();
-    const status   = document.getElementById('rStatus').value;
-    const username = document.getElementById('rUsername').value.trim();
-    const password = document.getElementById('rPassword').value.trim();
-
-    const errEl  = document.getElementById('daftarError');
-    const succEl = document.getElementById('daftarSuccess');
-    errEl.style.display  = 'none';
-    succEl.style.display = 'none';
-
-    if (!nama || !nik || !alamat || !telepon || !username || !password) {
-      errEl.style.display = 'block';
-      errEl.textContent = 'Semua field wajib diisi';
-      return;
-    }
-    if (nik.length !== 16) {
-      errEl.style.display = 'block';
-      errEl.textContent = 'NIK harus tepat 16 digit';
-      return;
-    }
-    if (password.length < 6) {
-      errEl.style.display = 'block';
-      errEl.textContent = 'Password minimal 6 karakter';
-      return;
-    }
-
-    const tanggal_daftar = new Date().toISOString().split('T')[0];
-
-    // Simpan ke Firebase (pending_reg)
-    try {
-      await fbSet(fbRef(db, 'pending_reg/' + username), {
-        nama, nik, alamat, telepon, status, username, password, tanggal_daftar
-      });
-    } catch (e) {
-      console.warn('Firebase set error:', e);
-    }
-
-    // Simpan juga ke localStorage agar admin.html bisa membaca
-    const pendingList = JSON.parse(localStorage.getItem('simart_pending_reg') || '[]');
-    if (!pendingList.find(p => p.username === username)) {
-      const newId = pendingList.length ? Math.max(...pendingList.map(x => x.id)) + 1 : 1;
-      pendingList.push({ id: newId, nama, nik, alamat, telepon, status, username, password, tanggal_daftar });
-      localStorage.setItem('simart_pending_reg', JSON.stringify(pendingList));
-    }
-
-    succEl.style.display = 'block';
-    succEl.textContent = '✅ Pendaftaran dikirim! Tunggu persetujuan admin RT.';
-
-    // Reset form
-    ['rNama','rNik','rAlamat','rTelepon','rUsername','rPassword'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-  }
-
-  // ─── Keyboard shortcut ────────────────────────────────────────────────────
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      if (currentTab === 'login') doLogin();
-      else doDaftar();
-    }
-  });
-
-  // ─── Particles ────────────────────────────────────────────────────────────
-  const pc = document.getElementById('particles');
-  for (let i = 0; i < 20; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    particle.style.cssText = [
-      `width:${size}px`,
-      `height:${size}px`,
-      `left:${Math.random() * 100}%`,
-      `background:${Math.random() > 0.5 ? 'rgba(233,69,96,0.6)' : 'rgba(245,166,35,0.4)'}`,
-      `animation-duration:${Math.random() * 15 + 10}s`,
-      `animation-delay:${Math.random() * 10}s`
-    ].join(';');
-    pc.appendChild(particle);
-  }
+}
+init();
 </script>
-
-<!-- ═══════════════════════════════════════════════════════
-     SCRIPT MODULE — Firebase (harus tag terpisah, tidak
-     boleh bersarang di dalam <script> biasa di atas)
-════════════════════════════════════════════════════════ -->
-<script type="module">
-  import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, child }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey:            "AIzaSyCq5imFX1yB2fc3QA0vyEi3lSQZJ1B7ur4",
-    authDomain:        "simart-a4cec.firebaseapp.com",
-    databaseURL:       "https://simart-a4cec-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId:         "simart-a4cec",
-    storageBucket:     "simart-a4cec.firebasestorage.app",
-    messagingSenderId: "267839232734",
-    appId:             "1:267839232734:web:4125baa50e4d43c02dc04f",
-    measurementId:     "G-3ML8ZP8KL2"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
-
-  // Ekspor ke window agar bisa dipakai fungsi reguler di atas
-  window.db      = db;
-  window.fbRef   = ref;
-  window.fbSet   = set;
-  window.fbGet   = get;
-  window.fbChild = child;
-</script>
-
 </body>
 </html>
