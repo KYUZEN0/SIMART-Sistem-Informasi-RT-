@@ -58,7 +58,20 @@
   .fg label{display:block;color:var(--light);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;}
   .iw{position:relative;}
   .iw .ii{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray);pointer-events:none;}
-  .fg input,.fg select{width:100%;padding:13px 16px 13px 44px;background:rgba(255,255,255,.06);border:1px solid var(--gb);border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;transition:all .3s;outline:none;-webkit-appearance:none;}
+  .fg input,
+  .fg select{
+   width:100%;
+   padding:13px 50px 13px 44px;
+   background:rgba(255,255,255,.06);
+   border:1px solid var(--gb);
+   border-radius:12px;
+   color:#fff;
+   font-family:'Plus Jakarta Sans',sans-serif;
+   font-size:14px;
+   transition:all .3s;
+   outline:none;
+   -webkit-appearance:none;
+ }
   .fg input:focus,.fg select:focus{border-color:var(--accent);background:rgba(233,69,96,.05);box-shadow:0 0 0 3px rgba(233,69,96,.1);}
   .fg input::placeholder{color:rgba(136,146,176,.6);}
   .fg select option{background:#1a1a2e;}
@@ -80,15 +93,15 @@
   right:16px;
   top:50%;
   transform:translateY(-50%);
+  font-size:18px;
   cursor:pointer;
-  font-size:16px;
-  color:var(--gray);
+  color:#8892b0;
+  z-index:10;
   user-select:none;
-  transition:.2s;
 }
 
 .toggle-pass:hover{
-  color:var(--light);
+  color:#fff;
 }
 </style>
 </head>
@@ -122,13 +135,25 @@
       <div class="sec on" id="secLogin">
         <div class="fg"><label>Username</label><div class="iw"><span class="ii">👤</span><input type="text" id="uname" placeholder="Masukkan username" autocomplete="off"></div></div>
         <div class="fg">
-        <label>Password</label>
-        <div class="iw">
-        <span class="ii">🔑</span>
-        <input type="password" id="upass" placeholder="Masukkan password">
-        <span class="toggle-pass" onclick="togglePassword('upass', this)">👁️</span>
-        </div>
-        </div>
+  <label>Password</label>
+
+  <div class="iw">
+    <span class="ii">🔑</span>
+
+    <input
+      type="password"
+      id="upass"
+      placeholder="Masukkan password"
+    >
+
+    <span
+      class="toggle-pass"
+      onclick="togglePassword('upass', this)"
+    >
+      👁️
+    </span>
+  </div>
+</div>
       </div>
 
       <!-- DAFTAR -->
@@ -143,12 +168,24 @@
         </div>
         <div class="r2">
           <div class="fg"><label>Username</label><div class="iw"><span class="ii">🔤</span><input type="text" id="rUser" placeholder="Username login"></div></div>
-          <div class="fg">
+         <div class="fg">
   <label>Password</label>
+
   <div class="iw">
     <span class="ii">🔒</span>
-    <input type="password" id="rPass" placeholder="Min. 6 karakter">
-    <span class="toggle-pass" onclick="togglePassword('rPass', this)">👁️</span>
+
+    <input
+      type="password"
+      id="rPass"
+      placeholder="Min. 6 karakter"
+    >
+
+    <span
+      class="toggle-pass"
+      onclick="togglePassword('rPass', this)"
+    >
+      👁️
+    </span>
   </div>
 </div>
         <button class="btn" id="btnDaftar" onclick="doDaftar()" disabled>Kirim Pendaftaran →</button>
