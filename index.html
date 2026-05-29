@@ -190,7 +190,7 @@ function switchTab(t) {
   document.getElementById('secLogin').classList.toggle('on', t==='login');
   document.getElementById('secDaftar').classList.toggle('on', t==='daftar');
   document.getElementById('cTitle').textContent = t==='login'?'Masuk':'Daftar';
-  document.getElementById('cSub').textContent   = t==='login'?'Masukkan username dan password Anda':'Buat akun baru sebagai warga';
+  document.getElementById('cSub').textContent   = t==='login'?'Masukkan username dan password Anda';
 }
 
 async function doLogin() {
