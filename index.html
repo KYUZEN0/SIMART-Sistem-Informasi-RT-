@@ -75,6 +75,21 @@
 
   @media(max-width:900px){.left{display:none;}.right{width:100%;border:none;padding:32px 24px;}body{overflow:auto;}}
   @media(max-width:480px){.right{padding:24px 20px;}.card h2{font-size:28px;}.r2{grid-template-columns:1fr;gap:0;}}
+  .toggle-pass{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:16px;
+  color:var(--gray);
+  user-select:none;
+  transition:.2s;
+}
+
+.toggle-pass:hover{
+  color:var(--light);
+}
 </style>
 </head>
 <body>
@@ -106,9 +121,14 @@
       <!-- LOGIN -->
       <div class="sec on" id="secLogin">
         <div class="fg"><label>Username</label><div class="iw"><span class="ii">👤</span><input type="text" id="uname" placeholder="Masukkan username" autocomplete="off"></div></div>
-        <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔑</span><input type="password" id="upass" placeholder="Masukkan password"></div></div>
-        <button class="btn" id="btnLogin" onclick="doLogin()" disabled>Masuk ke Sistem →</button>
-        <div class="al er" id="errLogin"></div>
+        <div class="fg">
+        <label>Password</label>
+        <div class="iw">
+        <span class="ii">🔑</span>
+        <input type="password" id="upass" placeholder="Masukkan password">
+        <span class="toggle-pass" onclick="togglePassword('upass', this)">👁️</span>
+        </div>
+        </div>
       </div>
 
       <!-- DAFTAR -->
@@ -123,8 +143,14 @@
         </div>
         <div class="r2">
           <div class="fg"><label>Username</label><div class="iw"><span class="ii">🔤</span><input type="text" id="rUser" placeholder="Username login"></div></div>
-          <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔒</span><input type="password" id="rPass" placeholder="Min. 6 karakter"></div></div>
-        </div>
+          <div class="fg">
+  <label>Password</label>
+  <div class="iw">
+    <span class="ii">🔒</span>
+    <input type="password" id="rPass" placeholder="Min. 6 karakter">
+    <span class="toggle-pass" onclick="togglePassword('rPass', this)">👁️</span>
+  </div>
+</div>
         <button class="btn" id="btnDaftar" onclick="doDaftar()" disabled>Kirim Pendaftaran →</button>
         <div class="al er" id="errDaftar"></div>
         <div class="al ok" id="okDaftar"></div>
@@ -296,6 +322,17 @@ if(!db){
   });
 } else {
   init();
+}
+function togglePassword(id, el){
+  const input = document.getElementById(id);
+
+  if(input.type === 'password'){
+    input.type = 'text';
+    el.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    el.textContent = '👁️';
+  }
 }
 </script>
 </body>
