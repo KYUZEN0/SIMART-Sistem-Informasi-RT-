@@ -134,14 +134,16 @@
   </div>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-database-compat.js"></script>
+<!-- Firebase SDK (versi 10.x - stabil dan teruji) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
 /* ============================================================
    GANTI DENGAN CONFIG FIREBASE ANDA
    Dapatkan di: console.firebase.google.com
    Project Settings > General > Your apps > Web app > SDK setup
+   PASTIKAN databaseURL diisi! Format:
+   https://NAMA-PROJECT-default-rtdb.firebaseio.com
    ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyBILdsgXojLJUanEf3gg6V5op2UAppRvDg",
@@ -155,21 +157,31 @@ const firebaseConfig = {
 
 /* Username & password admin — ubah sesuai keinginan */
 const ADMIN_U = "admin";
-const ADMIN_P = "adminganteng";
+const ADMIN_P = "admin123";
 
 /* ============================================================
    PENTING: Atur Firebase Realtime Database Rules di console:
-   Pergi ke Realtime Database > Rules, lalu set:
-   {
-     "rules": {
-       ".read": true,
-       ".write": true
-     }
-   }
-   (Untuk produksi, gunakan rules yang lebih ketat)
+   Realtime Database > Rules > set ke:
+   { "rules": { ".read": true, ".write": true } }
    ============================================================ */
-firebase.initializeApp(FIREBASE_CONFIG);
-const db = firebase.database();
+
+// Inisialisasi Firebase dengan proteksi error
+let db;
+function showFatalError(msg) {
+  const lo = document.getElementById('loading');
+  lo.querySelector('p').textContent = msg;
+  lo.querySelector('p').style.color = '#ff6b7a';
+  document.getElementById('btnLogin').disabled = false;
+  document.getElementById('btnDaftar').disabled = false;
+  setTimeout(() => { lo.style.opacity = '0'; setTimeout(() => lo.style.display = 'none', 400); }, 3000);
+}
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+} catch(e) {
+  console.error('Firebase init gagal:', e);
+  showFatalError('\u274C Konfigurasi Firebase salah. Periksa config & databaseURL.');
+}
 
 let curTab = 'login';
 
