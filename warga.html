@@ -313,27 +313,38 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.13.0/firebase-database-compat.js"></script>
+<!-- Firebase SDK (versi 10.x - stabil) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
 /* ============================================================
    GANTI DENGAN CONFIG FIREBASE ANDA (sama dengan index.html)
    Dapatkan di: console.firebase.google.com
    Project Settings > General > Your apps > Web app > SDK setup
    ============================================================ */
-const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com"
+const firebaseConfig = {
+  apiKey: "AIzaSyBILdsgXojLJUanEf3gg6V5op2UAppRvDg",
+  authDomain: "simart-9fe1d.firebaseapp.com",
+  databaseURL: "https://simart-9fe1d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "simart-9fe1d",
+  storageBucket: "simart-9fe1d.firebasestorage.app",
+  messagingSenderId: "982502510613",
+  appId: "1:982502510613:web:5844528aca80948aee3e1c"
 };
 /* ============================================================ */
 
-firebase.initializeApp(FIREBASE_CONFIG);
-const db = firebase.database();
+// Inisialisasi Firebase dengan proteksi error
+let db;
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+} catch(e) {
+  console.error('Firebase init gagal:', e);
+  const lo = document.getElementById('loading');
+  lo.querySelector('p').textContent = '\u274C Konfigurasi Firebase salah. Periksa config & databaseURL.';
+  lo.querySelector('p').style.color = '#e94560';
+  setTimeout(() => { lo.style.opacity='0'; setTimeout(()=>lo.style.display='none',400); }, 3000);
+}
 
 const user = JSON.parse(sessionStorage.getItem('simart_user')||'null');
 if(!user||user.role!=='warga') window.location.href='index.html';
