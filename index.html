@@ -109,6 +109,7 @@
         <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔑</span><input type="password" id="upass" placeholder="Masukkan password"></div></div>
         <button class="btn" id="btnLogin" onclick="doLogin()" disabled>Masuk ke Sistem →</button>
         <div class="al er" id="errLogin"></div>
+        <div class="foot"><strong>Demo:</strong> Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123</div>
       </div>
 
       <!-- DAFTAR -->
@@ -134,8 +135,8 @@
 </div>
 
 <!-- Firebase SDK (versi 10.x - stabil dan teruji) -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-database-compat.js"></script>
 <script>
 /* ============================================================
    GANTI DENGAN CONFIG FIREBASE ANDA
@@ -206,6 +207,7 @@ async function doLogin() {
       sessionStorage.setItem('simart_user',JSON.stringify({role:'admin',nama:'Admin RT',username:'admin'}));
       window.location.href='admin.html'; return;
     }
+    if(!dbReady(err)){btn.textContent='Masuk ke Sistem →'; btn.disabled=false; return;}
     const snap = await db.ref('simart/warga').once('value');
     if(snap.exists()){
       const found = Object.values(snap.val()).find(w=>w.username===u&&w.password===p);
@@ -219,7 +221,7 @@ async function doLogin() {
       showErr(err,'⏳ Akun Anda masih menunggu persetujuan Admin RT.'); return;
     }
     showErr(err,'⚠️ Username atau password salah. Silakan coba lagi.');
-  } catch(e){ showErr(err,'❌ Gagal terhubung ke server. Periksa koneksi internet.'); }
+  } catch(e){ showErr(err,'❌ Gagal terhubung: '+e.message); }
   finally{ btn.textContent='Masuk ke Sistem →'; btn.disabled=false; }
 }
 
@@ -234,6 +236,7 @@ async function doDaftar() {
   if(nik.length<16){showErr(err,'⚠️ NIK harus 16 digit.');return;}
   if(pass.length<6){showErr(err,'⚠️ Password minimal 6 karakter.');return;}
   btn.textContent='Mengirim...'; btn.disabled=true;
+  if(!dbReady(err)){btn.textContent='Kirim Pendaftaran →'; btn.disabled=false; return;}
   try {
     const [wSnap,pSnap]=await Promise.all([db.ref('simart/warga').once('value'),db.ref('simart/pending_reg').once('value')]);
     const warga=wSnap.exists()?Object.values(wSnap.val()):[];
@@ -245,11 +248,20 @@ async function doDaftar() {
     ok.textContent='✅ Pendaftaran berhasil! Tunggu persetujuan Admin RT untuk bisa login.';
     ok.style.display='block';
     ['rNama','rNik','rAlamat','rTel','rUser','rPass'].forEach(id=>document.getElementById(id).value='');
-  } catch(e){ showErr(err,'❌ Gagal menyimpan. Periksa koneksi internet.'); }
+  } catch(e){ showErr(err,'❌ Gagal menyimpan: '+e.message); }
   finally{ btn.textContent='Kirim Pendaftaran →'; btn.disabled=false; }
 }
 
 function showErr(el,msg){el.textContent=msg;el.style.display='block';}
+function dbReady(errEl){
+  if(!db){
+    const msg='❌ Firebase belum terhubung! Pastikan databaseURL sudah diisi di konfigurasi.';
+    if(errEl) showErr(errEl, msg);
+    else alert(msg);
+    return false;
+  }
+  return true;
+}
 
 async function init() {
   try {
@@ -275,7 +287,17 @@ async function init() {
     for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';const s=Math.random()*4+2;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${Math.random()>.5?'rgba(233,69,96,0.6)':'rgba(245,166,35,0.4)'};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;pc.appendChild(p);}
   }
 }
-init();
+// Tampilkan banner error jika Firebase tidak terhubung
+if(!db){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const banner=document.createElement('div');
+    banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;text-align:center;padding:12px 16px;font-size:13px;font-weight:600;';
+    banner.innerHTML='\u26A0\uFE0F Firebase TIDAK terhubung! Isi <b>databaseURL</b> yang benar di konfigurasi index.html, admin.html, dan warga.html';
+    document.body.prepend(banner);
+  });
+} else {
+  init();
+}
 </script>
 </body>
 </html>
