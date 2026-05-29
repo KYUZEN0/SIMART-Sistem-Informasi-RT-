@@ -321,8 +321,8 @@
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDK (versi 10.x - stabil) -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-database-compat.js"></script>
 <script>
 /* ============================================================
    GANTI DENGAN CONFIG FIREBASE ANDA (sama dengan index.html)
@@ -356,6 +356,15 @@ try {
 // Auth check
 const user = JSON.parse(sessionStorage.getItem('simart_user')||'null');
 if(!user||user.role!=='admin') window.location.href='index.html';
+// Show Firebase error banner if db failed
+if(!db){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const banner=document.createElement('div');
+    banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;text-align:center;padding:14px 16px;font-size:14px;font-weight:600;';
+    banner.innerHTML='⚠️ Firebase TIDAK terhubung! Periksa konfigurasi <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px">databaseURL</code> di admin.html &amp; index.html';
+    document.body.prepend(banner);
+  });
+}
 document.getElementById('adminName').textContent = user?.nama||'Admin';
 document.getElementById('dateEl').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
@@ -385,13 +394,21 @@ function goPage(name){
 
 // Helpers
 const fRp=n=>'Rp '+Number(n).toLocaleString('id-ID');
-function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=(type==='ok'?'✅ ':'❌ ')+msg;t.className='toast on'+(type==='er'?' er':'');setTimeout(()=>t.classList.remove('on'),3000);}
+function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=(type==='ok'?'✅ ':'❌ ')+msg;t.className='toast on'+(type==='er'?' er':'');setTimeout(()=>t.classList.remove('on'),3500);}
+function dbReady(){
+  if(!db){
+    toast('Firebase belum terhubung! Pastikan databaseURL sudah diisi di config.','er');
+    return false;
+  }
+  return true;
+}
 function openModal(id){document.getElementById(id).classList.add('on');}
 function closeModal(id){document.getElementById(id).classList.remove('on');}
 function toArr(snap){if(!snap.exists())return[];return Object.values(snap.val());}
 
 // Load all data
 async function loadAll(){
+  if(!dbReady()) return;
   const [ws,ss,ks,as,rs]=await Promise.all([
     db.ref('simart/warga').once('value'),
     db.ref('simart/surat').once('value'),
@@ -436,6 +453,7 @@ function renderWargaTb(){
 function openMW(){document.getElementById('wFbKey').value='';document.getElementById('mwTitle').textContent='Tambah Warga';['wNama','wNik','wAlamat','wTel','wUser','wPass'].forEach(id=>document.getElementById(id).value='');document.getElementById('wStatus').value='Tetap';openModal('moWarga');}
 function editWarga(k){const w=wargaData.find(x=>x.fbKey===k);if(!w)return;document.getElementById('wFbKey').value=k;document.getElementById('mwTitle').textContent='Edit Warga';document.getElementById('wNama').value=w.nama;document.getElementById('wNik').value=w.nik;document.getElementById('wAlamat').value=w.alamat;document.getElementById('wTel').value=w.telepon;document.getElementById('wStatus').value=w.status;document.getElementById('wUser').value=w.username;document.getElementById('wPass').value='';openModal('moWarga');}
 async function saveWarga(){
+  if(!dbReady()) return;
   const k=document.getElementById('wFbKey').value,nama=document.getElementById('wNama').value.trim(),nik=document.getElementById('wNik').value.trim(),alamat=document.getElementById('wAlamat').value.trim(),tel=document.getElementById('wTel').value.trim(),status=document.getElementById('wStatus').value,username=document.getElementById('wUser').value.trim(),pass=document.getElementById('wPass').value.trim();
   if(!nama||!nik||!alamat||!tel||!username){toast('Isi semua field wajib','er');return;}
   try{
@@ -454,6 +472,7 @@ async function saveWarga(){
   }catch(e){toast('Gagal menyimpan: '+e.message,'er');}
 }
 async function delWarga(k){
+  if(!dbReady()) return;
   if(!confirm('Hapus data warga ini?'))return;
   try{
     await db.ref('simart/warga/'+k).remove();
@@ -491,11 +510,13 @@ function viewSurat(k){
   openModal('moSurat');
 }
 async function approveSurat(k){
+  if(!dbReady()) return;
   const idx=suratData.findIndex(x=>x.fbKey===k);if(idx===-1)return;
   try{await db.ref('simart/surat/'+k+'/status').set('approved');suratData[idx].status='approved';renderSurat();updateBadges();toast('Surat disetujui!');}
   catch(e){toast('Gagal','er');}
 }
 async function rejectSurat(k){
+  if(!dbReady()) return;
   const ket=prompt('Alasan penolakan (opsional):')||'';
   const idx=suratData.findIndex(x=>x.fbKey===k);if(idx===-1)return;
   try{await db.ref('simart/surat/'+k).update({status:'rejected',keterangan:ket});suratData[idx].status='rejected';suratData[idx].keterangan=ket;renderSurat();updateBadges();toast('Surat ditolak','er');}
@@ -512,6 +533,7 @@ function renderKas(){
   tb.innerHTML=[...kasData].reverse().map((x,i)=>`<tr><td style="color:var(--mu)">${i+1}</td><td>${x.tanggal}</td><td><span class="badge ${x.jenis==='masuk'?'bm':'bk'}">${x.jenis==='masuk'?'Pemasukan':'Pengeluaran'}</span></td><td style="font-weight:700;color:${x.jenis==='masuk'?'var(--ac3)':'var(--ac)'}">${x.jenis==='masuk'?'+':'-'}${fRp(x.jumlah)}</td><td>${x.keterangan}</td><td><button class="btn bd sm" onclick="delKas('${x.fbKey}')">🗑️</button></td></tr>`).join('');
 }
 async function saveKas(){
+  if(!dbReady()) return;
   const tgl=document.getElementById('kTgl').value,jenis=document.getElementById('kJenis').value,jumlah=document.getElementById('kJumlah').value,ket=document.getElementById('kKet').value.trim();
   if(!tgl||!jumlah){toast('Isi tanggal dan jumlah','er');return;}
   try{const nr=db.ref('simart/kas').push();const nd={fbKey:nr.key,tanggal:tgl,jenis,jumlah:+jumlah,keterangan:ket};await nr.set(nd);kasData.push(nd);closeModal('moKas');document.getElementById('kJumlah').value='';document.getElementById('kKet').value='';renderKas();toast('Transaksi disimpan!');}
@@ -530,6 +552,7 @@ function renderAnn(){
   el.innerHTML=[...annData].reverse().map(a=>`<div class="ai"><h4>${a.judul}</h4><div class="ad">📅 ${a.tanggal}</div><div class="ab">${a.isi}</div><div class="aa"><button class="btn bd sm" onclick="delAnn('${a.fbKey}')">🗑️ Hapus</button></div></div>`).join('');
 }
 async function savePeng(){
+  if(!dbReady()) return;
   const judul=document.getElementById('pJudul').value.trim(),tgl=document.getElementById('pTgl').value,isi=document.getElementById('pIsi').value.trim();
   if(!judul||!tgl||!isi){toast('Isi semua field','er');return;}
   try{const nr=db.ref('simart/pengumuman').push();const nd={fbKey:nr.key,judul,tanggal:tgl,isi};await nr.set(nd);annData.push(nd);closeModal('moPeng');document.getElementById('pJudul').value='';document.getElementById('pIsi').value='';renderAnn();toast('Pengumuman dipublikasikan!');}
@@ -551,6 +574,7 @@ function renderReg(){
   updateBadges();
 }
 async function approveReg(k){
+  if(!dbReady()) return;
   const reg=regData.find(x=>x.fbKey===k);if(!reg)return;
   try{
     const nr=db.ref('simart/warga').push();
@@ -562,6 +586,7 @@ async function approveReg(k){
   }catch(e){toast('Gagal','er');}
 }
 async function rejectReg(k){
+  if(!dbReady()) return;
   if(!confirm('Tolak pendaftaran ini?'))return;
   try{await db.ref('simart/pending_reg/'+k).remove();regData=regData.filter(x=>x.fbKey!==k);renderReg();updateBadges();toast('Pendaftaran ditolak','er');}
   catch(e){toast('Gagal','er');}
