@@ -182,6 +182,15 @@
     .toast{bottom:90px;right:16px;left:16px;}
   }
   @media(max-width:480px){.qs{grid-template-columns:1fr 1fr;}}
+
+  /* === Show/Hide Password === */
+  .pw-wrap{position:relative;display:block;}
+  .pw-wrap input{padding-right:46px!important;width:100%;box-sizing:border-box;}
+  .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(136,146,176,.6);padding:4px;display:flex;align-items:center;transition:color .25s,transform .25s;}
+  .pw-toggle:hover{color:#fff;}
+  .pw-toggle.active{color:var(--grn);}
+  @keyframes eyePop{0%{transform:translateY(-50%) scale(1)}40%{transform:translateY(-50%) scale(.7) rotate(-15deg)}100%{transform:translateY(-50%) scale(1)}}
+  .pw-toggle.pop{animation:eyePop .3s ease forwards;}
 </style>
 </head>
 <body>
@@ -213,7 +222,7 @@
 <div class="main">
   <!-- BERANDA -->
   <div class="page on" id="pg-beranda">
-    <div class="banner"><div class="gr">Selamat datang kembali 👋</div><h1 id="bannerName">Warga RT 07</h1><p>Portal warga RT 07 digital — urus administrasi dari mana saja</p></div>
+    <div class="banner"><div class="gr">Selamat datang kembali 👋</div><h1 id="bannerName">Warga RT</h1><p>Portal warga RT digital — urus administrasi dari mana saja</p></div>
     <div class="qs">
       <div class="qsc" onclick="goPage('surat')"><div class="qsi bl">📄</div><div><div class="qsv" id="qsSurat">—</div><div class="qsl">Surat Saya</div></div></div>
       <div class="qsc" onclick="goPage('surat')"><div class="qsi gd">⏳</div><div><div class="qsv" id="qsPend">—</div><div class="qsl">Menunggu Proses</div></div></div>
@@ -257,10 +266,10 @@
       <div class="fg"><label>No. Telepon</label><input type="text" id="epTel" placeholder="08xxxxxxxxxx"></div>
       <div class="passbox">
         <div class="pt">🔒 Ganti Password (opsional)</div>
-        <div class="fg"><label>Password Lama</label><input type="password" id="epOld" placeholder="Password saat ini"></div>
+        <div class="fg"><label>Password Lama</label><div class="pw-wrap"><input type="password" id="epOld" placeholder="Password saat ini"><button type="button" class="pw-toggle" onclick="togglePw(this,'epOld')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         <div class="fr2">
-          <div class="fg"><label>Password Baru</label><input type="password" id="epNew" placeholder="Min. 6 karakter"></div>
-          <div class="fg"><label>Konfirmasi</label><input type="password" id="epConf" placeholder="Ulangi password baru"></div>
+          <div class="fg"><label>Password Baru</label><div class="pw-wrap"><input type="password" id="epNew" placeholder="Min. 6 karakter"><button type="button" class="pw-toggle" onclick="togglePw(this,'epNew')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+          <div class="fg"><label>Konfirmasi</label><div class="pw-wrap"><input type="password" id="epConf" placeholder="Ulangi password baru"><button type="button" class="pw-toggle" onclick="togglePw(this,'epConf')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
@@ -475,7 +484,7 @@ function renderProfil(){
   if(!myWarga){document.getElementById('profileCard').innerHTML='<div class="empty"><div class="ei">❌</div><h4>Data profil tidak ditemukan</h4></div>';return;}
   document.getElementById('editForm').classList.remove('on');
   document.getElementById('profileCard').style.display='block';
-  document.getElementById('profileCard').innerHTML=`<div class="pcard"><div class="phead"><div class="pav">👤</div><div class="pname">${myWarga.nama}</div><div class="prole">Warga RT 07• ${myWarga.status}</div></div><div class="pinfo"><div class="ir"><div class="iico">🪪</div><div style="flex:1"><div class="ilb">NIK</div><div class="ival" style="font-family:monospace;font-size:13px">${myWarga.nik}</div></div></div><div class="ir"><div class="iico">🏠</div><div style="flex:1"><div class="ilb">Alamat</div><div class="ival">${myWarga.alamat}</div></div></div><div class="ir"><div class="iico">📱</div><div style="flex:1"><div class="ilb">Telepon</div><div class="ival">${myWarga.telepon}</div></div></div><div class="ir"><div class="iico">👤</div><div style="flex:1"><div class="ilb">Username</div><div class="ival">${myWarga.username}</div></div></div><div class="ir"><div class="iico">🏘️</div><div style="flex:1"><div class="ilb">Status Hunian</div><div class="ival">${myWarga.status}</div></div></div></div><div style="padding:18px 24px;border-top:1px solid var(--bor)"><button class="btn bp full" onclick="openEdit()">✏️ Edit Profil Saya</button></div></div>`;
+  document.getElementById('profileCard').innerHTML=`<div class="pcard"><div class="phead"><div class="pav">👤</div><div class="pname">${myWarga.nama}</div><div class="prole">Warga RT • ${myWarga.status}</div></div><div class="pinfo"><div class="ir"><div class="iico">🪪</div><div style="flex:1"><div class="ilb">NIK</div><div class="ival" style="font-family:monospace;font-size:13px">${myWarga.nik}</div></div></div><div class="ir"><div class="iico">🏠</div><div style="flex:1"><div class="ilb">Alamat</div><div class="ival">${myWarga.alamat}</div></div></div><div class="ir"><div class="iico">📱</div><div style="flex:1"><div class="ilb">Telepon</div><div class="ival">${myWarga.telepon}</div></div></div><div class="ir"><div class="iico">👤</div><div style="flex:1"><div class="ilb">Username</div><div class="ival">${myWarga.username}</div></div></div><div class="ir"><div class="iico">🏘️</div><div style="flex:1"><div class="ilb">Status Hunian</div><div class="ival">${myWarga.status}</div></div></div></div><div style="padding:18px 24px;border-top:1px solid var(--bor)"><button class="btn bp full" onclick="openEdit()">✏️ Edit Profil Saya</button></div></div>`;
 }
 
 function openEdit(){
@@ -513,6 +522,21 @@ async function init(){
   const lo=document.getElementById('loading');lo.style.opacity='0';setTimeout(()=>lo.style.display='none',400);
 }
 init();
+
+// === Toggle Show/Hide Password ===
+const _EYE = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const _EYE_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+function togglePw(btn, id) {
+  const inp = document.getElementById(id);
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden ? _EYE_OFF : _EYE;
+  btn.classList.toggle('active', isHidden);
+  btn.classList.remove('pop');
+  void btn.offsetWidth;
+  btn.classList.add('pop');
+  btn.addEventListener('animationend', () => btn.classList.remove('pop'), {once:true});
+}
 </script>
 </body>
 </html>
