@@ -75,6 +75,15 @@
 
   @media(max-width:900px){.left{display:none;}.right{width:100%;border:none;padding:32px 24px;}body{overflow:auto;}}
   @media(max-width:480px){.right{padding:24px 20px;}.card h2{font-size:28px;}.r2{grid-template-columns:1fr;gap:0;}}
+
+  /* === Show/Hide Password === */
+  .iw{position:relative;}
+  .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(136,146,176,.6);padding:4px;display:flex;align-items:center;transition:color .25s,transform .25s;}
+  .pw-toggle:hover{color:#fff;}
+  .pw-toggle.active{color:var(--accent);}
+  @keyframes eyePop{0%{transform:translateY(-50%) scale(1)}40%{transform:translateY(-50%) scale(.7) rotate(-15deg)}100%{transform:translateY(-50%) scale(1)}}
+  .pw-toggle.pop{animation:eyePop .3s ease forwards;}
+  .fg input[type=password],.fg input[type=text]{padding-right:46px;}
 </style>
 </head>
 <body>
@@ -87,7 +96,7 @@
     <h1 class="hero">Kelola RT<br>dengan <span class="ac">Cerdas</span><br>&amp; Efisien</h1>
     <p class="desc">Platform administrasi RT modern yang memudahkan pengelolaan data warga, surat-menyurat, keuangan kas, dan pengumuman dalam satu sistem terintegrasi.</p>
     <div class="feat">
-      <div class="fc"><div class="ic">👥</div><div class="lb">Data Warga</div><div class="sl">Kelola profil warga</div></div>
+      <div class="fc"><div class="ic">👥</div><div class="lb">Data Warga</div><div class="sl">Kelola profil warga RT</div></div>
       <div class="fc"><div class="ic">📄</div><div class="lb">Surat Digital</div><div class="sl">Pengajuan &amp; cetak surat</div></div>
       <div class="fc"><div class="ic">💰</div><div class="lb">Kas RT</div><div class="sl">Catat pemasukan &amp; pengeluaran</div></div>
       <div class="fc"><div class="ic">📢</div><div class="lb">Pengumuman</div><div class="sl">Informasi warga terkini</div></div>
@@ -106,9 +115,10 @@
       <!-- LOGIN -->
       <div class="sec on" id="secLogin">
         <div class="fg"><label>Username</label><div class="iw"><span class="ii">👤</span><input type="text" id="uname" placeholder="Masukkan username" autocomplete="off"></div></div>
-        <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔑</span><input type="password" id="upass" placeholder="Masukkan password"></div></div>
+        <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔑</span><input type="password" id="upass" placeholder="Masukkan password"><button type="button" class="pw-toggle" onclick="togglePw(this,'upass')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         <button class="btn" id="btnLogin" onclick="doLogin()" disabled>Masuk ke Sistem →</button>
         <div class="al er" id="errLogin"></div>
+        <div class="foot"><strong>Demo:</strong> Admin: admin / admin123 &nbsp;|&nbsp; Warga: warga1 / warga123</div>
       </div>
 
       <!-- DAFTAR -->
@@ -123,7 +133,7 @@
         </div>
         <div class="r2">
           <div class="fg"><label>Username</label><div class="iw"><span class="ii">🔤</span><input type="text" id="rUser" placeholder="Username login"></div></div>
-          <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔒</span><input type="password" id="rPass" placeholder="Min. 6 karakter"></div></div>
+          <div class="fg"><label>Password</label><div class="iw"><span class="ii">🔒</span><input type="password" id="rPass" placeholder="Min. 6 karakter"><button type="button" class="pw-toggle" onclick="togglePw(this,'rPass')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         </div>
         <button class="btn" id="btnDaftar" onclick="doDaftar()" disabled>Kirim Pendaftaran →</button>
         <div class="al er" id="errDaftar"></div>
@@ -296,6 +306,21 @@ if(!db){
   });
 } else {
   init();
+}
+
+// === Toggle Show/Hide Password ===
+const _EYE = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const _EYE_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+function togglePw(btn, id) {
+  const inp = document.getElementById(id);
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden ? _EYE_OFF : _EYE;
+  btn.classList.toggle('active', isHidden);
+  btn.classList.remove('pop');
+  void btn.offsetWidth; // reflow to restart animation
+  btn.classList.add('pop');
+  btn.addEventListener('animationend', () => btn.classList.remove('pop'), {once: true});
 }
 </script>
 </body>
