@@ -172,6 +172,15 @@
     .toast{bottom:16px;right:16px;left:16px;}
   }
   @media(max-width:480px){.ksm{grid-template-columns:1fr;}thead th:nth-child(n+4),tbody td:nth-child(n+4){display:none;}}
+
+  /* === Show/Hide Password === */
+  .pw-wrap{position:relative;display:block;flex:1;}
+  .pw-wrap input{padding-right:44px!important;width:100%;box-sizing:border-box;}
+  .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(136,146,176,.6);padding:4px;display:flex;align-items:center;transition:color .25s;}
+  .pw-toggle:hover{color:#fff;}
+  .pw-toggle.active{color:var(--ac);}
+  @keyframes eyePop{0%{transform:translateY(-50%) scale(1)}40%{transform:translateY(-50%) scale(.7) rotate(-15deg)}100%{transform:translateY(-50%) scale(1)}}
+  .pw-toggle.pop{animation:eyePop .3s ease forwards;}
 </style>
 </head>
 <body>
@@ -280,7 +289,7 @@
       <div class="fr"><div class="fg"><label>Nama Lengkap</label><input type="text" id="wNama" placeholder="Nama warga"></div><div class="fg"><label>NIK (16 digit)</label><input type="text" id="wNik" placeholder="NIK" maxlength="16"></div></div>
       <div class="fg"><label>Alamat</label><input type="text" id="wAlamat" placeholder="Alamat lengkap"></div>
       <div class="fr"><div class="fg"><label>Telepon</label><input type="text" id="wTel" placeholder="No. HP"></div><div class="fg"><label>Status Hunian</label><select id="wStatus"><option value="Tetap">Tetap</option><option value="Kontrak">Kontrak</option><option value="Kost">Kost</option></select></div></div>
-      <div class="fr"><div class="fg"><label>Username Login</label><input type="text" id="wUser" placeholder="Username"></div><div class="fg"><label>Password Login</label><input type="text" id="wPass" placeholder="Password (kosongkan jika tidak ganti)"></div></div>
+      <div class="fr"><div class="fg"><label>Username Login</label><input type="text" id="wUser" placeholder="Username"></div><div class="fg"><label>Password Login</label><div class="pw-wrap"><input type="password" id="wPass" placeholder="Password (kosongkan jika tidak ganti)"><button type="button" class="pw-toggle" onclick="togglePw(this,'wPass')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div></div>
     </div>
     <div class="mf"><button class="btn bg" onclick="closeModal('moWarga')">Batal</button><button class="btn bp" onclick="saveWarga()">💾 Simpan</button></div>
   </div>
@@ -616,6 +625,21 @@ async function init(){
   lo.style.opacity='0';setTimeout(()=>lo.style.display='none',400);
 }
 init();
+
+// === Toggle Show/Hide Password ===
+const _EYE = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const _EYE_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+function togglePw(btn, id) {
+  const inp = document.getElementById(id);
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden ? _EYE_OFF : _EYE;
+  btn.classList.toggle('active', isHidden);
+  btn.classList.remove('pop');
+  void btn.offsetWidth;
+  btn.classList.add('pop');
+  btn.addEventListener('animationend', () => btn.classList.remove('pop'), {once:true});
+}
 </script>
 </body>
 </html>
