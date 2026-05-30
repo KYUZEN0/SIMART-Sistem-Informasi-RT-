@@ -147,11 +147,39 @@
   ::-webkit-scrollbar-track{background:var(--bg);}
   ::-webkit-scrollbar-thumb{background:var(--bor);border-radius:3px;}
 
+
+  /* === Tombol Keluar Mobile (Admin) === */
+  .topbar-r{display:flex;align-items:center;gap:10px;}
+  .mob-logout{
+    display:none;
+    align-items:center;
+    gap:6px;
+    padding:8px 14px;
+    background:rgba(233,69,96,.12);
+    border:1.5px solid rgba(233,69,96,.3);
+    border-radius:10px;
+    color:var(--ac);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .25s ease;
+    white-space:nowrap;
+  }
+  .mob-logout:hover{background:rgba(233,69,96,.22);border-color:rgba(233,69,96,.5);}
+  .mob-logout:active{transform:scale(.95);}
+  .mob-logout-icon{font-size:16px;display:inline-block;transition:transform .3s ease;}
+  .mob-logout:hover .mob-logout-icon,.mob-logout:active .mob-logout-icon{transform:translateX(3px);}
+  @keyframes doorPop{0%{transform:scale(1)}30%{transform:scale(.85) rotate(-8deg)}70%{transform:scale(1.1) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+  .mob-logout:active .mob-logout-icon{animation:doorPop .35s ease forwards;}
+
   @media(max-width:768px){
     .sidebar{transform:translateX(-100%);}
     .sidebar.on{transform:translateX(0);}
     .main{margin-left:0;}
     .hbg{display:flex;}
+    .mob-logout{display:flex;}
+    .mob-logout-txt{display:none;}
     .tcol{grid-template-columns:1fr;}
     .fr{grid-template-columns:1fr;}
     .ksm{grid-template-columns:1fr 1fr;}
@@ -163,6 +191,7 @@
     .rm{grid-template-columns:1fr;}
     .toast{bottom:16px;right:16px;left:16px;}
   }
+  @media(min-width:480px) and (max-width:768px){.mob-logout-txt{display:inline;}}
   @media(max-width:480px){.ksm{grid-template-columns:1fr;}thead th:nth-child(n+4),tbody td:nth-child(n+4){display:none;}}
 
   /* === Show/Hide Password === */
