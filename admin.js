@@ -4,13 +4,13 @@
    Project Settings > General > Your apps > Web app > SDK setup
    ============================================================ */
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com"
+  apiKey: "AIzaSyBILdsgXojLJUanEf3gg6V5op2UAppRvDg",
+  authDomain: "simart-9fe1d.firebaseapp.com",
+  databaseURL: "https://simart-9fe1d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "simart-9fe1d",
+  storageBucket: "simart-9fe1d.firebasestorage.app",
+  messagingSenderId: "982502510613",
+  appId: "1:982502510613:web:5844528aca80948aee3e1c"
 };
 /* ============================================================ */
 
