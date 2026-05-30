@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Warga — SIMART</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="warga.css">
+</head>
+<body>
+<div id="loading"><div class="logo">SI<span>MART</span></div><div class="spinner"></div><p>Memuat data...</p></div>
+
+<nav class="topnav">
+  <div class="nlogo">SI<span>MART</span></div>
+  <div class="nlinks">
+    <button class="nl on" onclick="goPage('beranda')">🏠 Beranda</button>
+    <button class="nl" onclick="goPage('surat')">📄 Surat</button>
+    <button class="nl" onclick="goPage('kas')">💰 Kas RT</button>
+    <button class="nl" onclick="goPage('pengumuman')">📢 Pengumuman</button>
+    <button class="nl" onclick="goPage('profil')">👤 Profil</button>
+  </div>
+  <div class="nright">
+    <div class="upill"><div class="uav">👤</div><span class="uname" id="uName">Warga</span></div>
+    <button class="lbtn" onclick="logout()">Keluar</button>
+  </div>
+</nav>
+
+<nav class="botnav"><div class="bni">
+  <button class="bnb on" id="bn-beranda" onclick="goPage('beranda')"><span class="bi">🏠</span>Beranda</button>
+  <button class="bnb" id="bn-surat" onclick="goPage('surat')"><span class="bi">📄</span>Surat</button>
+  <button class="bnb" id="bn-kas" onclick="goPage('kas')"><span class="bi">💰</span>Kas</button>
+  <button class="bnb" id="bn-pengumuman" onclick="goPage('pengumuman')"><span class="bi">📢</span>Info</button>
+  <button class="bnb" id="bn-profil" onclick="goPage('profil')"><span class="bi">👤</span>Profil</button>
+</div></nav>
+
+<div class="main">
+  <!-- BERANDA -->
+  <div class="page on" id="pg-beranda">
+    <div class="banner"><div class="gr">Selamat datang kembali 👋</div><h1 id="bannerName">Warga RT</h1><p>Portal warga RT digital — urus administrasi dari mana saja</p></div>
+    <div class="qs">
+      <div class="qsc" onclick="goPage('surat')"><div class="qsi bl">📄</div><div><div class="qsv" id="qsSurat">—</div><div class="qsl">Surat Saya</div></div></div>
+      <div class="qsc" onclick="goPage('surat')"><div class="qsi gd">⏳</div><div><div class="qsv" id="qsPend">—</div><div class="qsl">Menunggu Proses</div></div></div>
+      <div class="qsc" onclick="goPage('pengumuman')"><div class="qsi gn">📢</div><div><div class="qsv" id="qsAnn">—</div><div class="qsl">Pengumuman</div></div></div>
+    </div>
+    <div id="latestAnn"></div>
+  </div>
+
+  <!-- SURAT -->
+  <div class="page" id="pg-surat">
+    <div class="ph"><div><h2>Surat Saya</h2><p>Ajukan dan pantau status surat Anda</p></div><button class="btn bp" onclick="bukaAjukan()">+ Ajukan Surat</button></div>
+    <div class="card"><div class="tw"><table><thead><tr><th>No</th><th>Jenis Surat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbSurat"></tbody></table></div></div>
+  </div>
+
+  <!-- KAS -->
+  <div class="page" id="pg-kas">
+    <div class="ph"><div><h2>Kas RT</h2><p>Transparansi keuangan RT kami</p></div></div>
+    <div class="kpub">
+      <div class="kpi km"><div class="kl">Total Pemasukan</div><div class="kv" id="kMasuk">Rp 0</div></div>
+      <div class="kpi kk"><div class="kl">Total Pengeluaran</div><div class="kv" id="kKeluar">Rp 0</div></div>
+      <div class="kpi ks"><div class="kl">Saldo</div><div class="kv" id="kSaldo">Rp 0</div></div>
+    </div>
+    <div class="card"><div class="ch"><h3>Riwayat Transaksi</h3></div><div class="tw"><table><thead><tr><th>No</th><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody id="tbKas"></tbody></table></div></div>
+  </div>
+
+  <!-- PENGUMUMAN -->
+  <div class="page" id="pg-pengumuman">
+    <div class="ph"><div><h2>Pengumuman</h2><p>Informasi terbaru dari pengurus RT</p></div></div>
+    <div class="ag" id="listAnn"></div>
+  </div>
+
+  <!-- PROFIL -->
+  <div class="page" id="pg-profil">
+    <div class="ph"><div><h2>Profil Saya</h2><p>Data diri dan pengaturan akun</p></div></div>
+    <div id="profileCard"></div>
+    <div class="editform" id="editForm">
+      <div class="eftitle">✏️ Edit Profil</div>
+      <div class="fg"><label>Nama Lengkap</label><input type="text" id="epNama" disabled><div class="fn">Nama hanya bisa diubah oleh Admin RT</div></div>
+      <div class="fg"><label>NIK</label><input type="text" id="epNik" disabled><div class="fn">NIK hanya bisa diubah oleh Admin RT</div></div>
+      <div class="fg"><label>Alamat</label><input type="text" id="epAlamat" placeholder="Alamat lengkap"></div>
+      <div class="fg"><label>No. Telepon</label><input type="text" id="epTel" placeholder="08xxxxxxxxxx"></div>
+      <div class="passbox">
+        <div class="pt">🔒 Ganti Password (opsional)</div>
+        <div class="fg"><label>Password Lama</label><div class="pw-wrap"><input type="password" id="epOld" placeholder="Password saat ini"><button type="button" class="pw-toggle" onclick="togglePw(this,'epOld')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+        <div class="fr2">
+          <div class="fg"><label>Password Baru</label><div class="pw-wrap"><input type="password" id="epNew" placeholder="Min. 6 karakter"><button type="button" class="pw-toggle" onclick="togglePw(this,'epNew')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+          <div class="fg"><label>Konfirmasi</label><div class="pw-wrap"><input type="password" id="epConf" placeholder="Ulangi password baru"><button type="button" class="pw-toggle" onclick="togglePw(this,'epConf')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn bs full" onclick="saveProfile()">💾 Simpan Perubahan</button>
+        <button class="btn bg full" onclick="cancelEdit()">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ajukan Surat -->
+<div class="mo" id="moSurat">
+  <div class="mbox">
+    <div class="mh"><h3>Ajukan Surat</h3><button class="mc" onclick="closeModal('moSurat')">✕</button></div>
+    <div class="mb">
+      <div class="infobox">📋 Isi semua data dengan benar. Setelah disetujui Admin, surat siap dicetak dan tinggal minta tanda tangan RT/RW.</div>
+      <div class="fg"><label>Jenis Surat</label><select id="sJenis"><option value="Domisili">Keterangan Domisili</option><option value="Usaha">Keterangan Usaha</option><option value="Tidak Mampu">Keterangan Tidak Mampu</option><option value="Kelahiran">Keterangan Kelahiran</option><option value="Kematian">Keterangan Kematian</option><option value="Pindah">Keterangan Pindah</option><option value="Lainnya">Lainnya</option></select></div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bor)">Data Pemohon</div>
+      <div class="fg"><label>1. Nama Lengkap</label><input type="text" id="sNama" placeholder="Sesuai KTP"></div>
+      <div class="fr2">
+        <div class="fg"><label>2. Jenis Kelamin</label><select id="sJK"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
+        <div class="fg"><label>4. Kewarganegaraan</label><input type="text" id="sWN" value="Indonesia"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label>3. Tempat Lahir</label><input type="text" id="sTL" placeholder="Kota tempat lahir"></div>
+        <div class="fg"><label>3. Tanggal Lahir</label><input type="date" id="sTglL"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label>5. Agama</label><select id="sAgama"><option value="Islam">Islam</option><option value="Kristen Protestan">Kristen Protestan</option><option value="Kristen Katolik">Kristen Katolik</option><option value="Hindu">Hindu</option><option value="Buddha">Buddha</option><option value="Konghucu">Konghucu</option></select></div>
+        <div class="fg"><label>6. Status Perkawinan</label><select id="sSK"><option value="Belum Kawin">Belum Kawin</option><option value="Kawin">Kawin</option><option value="Cerai Hidup">Cerai Hidup</option><option value="Cerai Mati">Cerai Mati</option></select></div>
+      </div>
+      <div class="fg"><label>7. Pekerjaan</label><input type="text" id="sKerja" placeholder="Contoh: Wiraswasta, Karyawan Swasta"></div>
+      <div class="fg"><label>8. Alamat KTP/KK</label><input type="text" id="sAKTP" placeholder="Alamat sesuai KTP"></div>
+      <div class="fg"><label>9. Alamat Saat Ini</label><input type="text" id="sANow" placeholder="Alamat tempat tinggal sekarang"></div>
+      <div class="fg"><label>10. NIK</label><input type="text" id="sNIK" placeholder="16 digit NIK" maxlength="16" style="font-family:monospace;letter-spacing:.05em"></div>
+      <div class="fg"><label>Keterangan Tambahan (opsional)</label><textarea id="sKet" placeholder="Keterangan jika perlu..." style="width:100%;padding:10px 13px;background:var(--sur2);border:1px solid var(--bor);border-radius:10px;color:var(--tx);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;resize:vertical;min-height:70px;"></textarea></div>
+    </div>
+    <div class="mf"><button class="btn bg" onclick="closeModal('moSurat')">Batal</button><button class="btn bp" onclick="ajukanSurat()">📄 Kirim Pengajuan</button></div>
+  </div>
+</div>
+
+<!-- Modal Detail Surat -->
+<div class="mo" id="moDetail">
+  <div class="mbox">
+    <div class="mh"><h3>Detail Surat</h3><button class="mc" onclick="closeModal('moDetail')">✕</button></div>
+    <div class="mb" id="suratDetailW"></div>
+    <div class="mf" id="suratActsW"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK (versi 10.x - stabil) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="warga.js"></script>
+</body>
+</html>

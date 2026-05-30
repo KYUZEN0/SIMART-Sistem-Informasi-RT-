@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — SIMART</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div id="loading"><div class="logo">SI<span>MART</span></div><div class="spinner"></div><p>Memuat data...</p></div>
+
+<div class="overlay" id="ovl" onclick="closeSB()"></div>
+<aside class="sidebar" id="sb">
+  <div class="slogo"><div class="t">SI<span>MART</span></div><div class="s">Sistem Informasi Administrasi RT</div></div>
+  <nav class="snav">
+    <div class="nlabel">Menu Utama</div>
+    <button class="ni on" data-page="dashboard" onclick="goPage('dashboard')"><span class="ico">🏠</span>Dashboard</button>
+    <button class="ni" data-page="warga" onclick="goPage('warga')"><span class="ico">👥</span>Data Warga</button>
+    <button class="ni" data-page="surat" onclick="goPage('surat')"><span class="ico">📄</span>Surat<span class="nbadge" id="bSurat">0</span></button>
+    <div class="nlabel" style="margin-top:14px">Keuangan &amp; Info</div>
+    <button class="ni" data-page="kas" onclick="goPage('kas')"><span class="ico">💰</span>Kas RT</button>
+    <button class="ni" data-page="pengumuman" onclick="goPage('pengumuman')"><span class="ico">📢</span>Pengumuman</button>
+    <div class="nlabel" style="margin-top:14px">Administrasi</div>
+    <button class="ni" data-page="pendaftaran" onclick="goPage('pendaftaran')"><span class="ico">📋</span>Pendaftaran<span class="nbadge yellow" id="bReg" style="display:none">0</span></button>
+  </nav>
+  <div class="sfoot">
+    <div class="uinfo"><div class="uav">👤</div><div><div class="uname" id="adminName">Admin</div><div class="urole">Administrator</div></div></div>
+    <button class="lbtn" onclick="logout()">🚪 Keluar</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-l"><button class="hbg" onclick="toggleSB()">☰</button><h1 id="pgTitle">Dashboard Admin</h1></div>
+    <div class="datebadge" id="dateEl"></div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="pg-dashboard">
+      <div class="sg">
+        <div class="sc bl"><div style="font-size:28px">👥</div><div class="sv" id="stWarga">—</div><div class="sl">Total Warga</div></div>
+        <div class="sc rd"><div style="font-size:28px">📄</div><div class="sv" id="stSurat">—</div><div class="sl">Total Surat</div></div>
+        <div class="sc yl"><div style="font-size:28px">⏳</div><div class="sv" id="stPend">—</div><div class="sl">Surat Pending</div></div>
+        <div class="sc gr"><div style="font-size:28px">💰</div><div class="sv" id="stSaldo">—</div><div class="sl">Saldo Kas (Rp)</div></div>
+      </div>
+      <div class="tcol">
+        <div class="card"><div class="ch"><h3>📄 Surat Terbaru</h3><button class="btn bg sm" onclick="goPage('surat')">Lihat Semua</button></div><div class="cb" id="dSurat"></div></div>
+        <div class="card"><div class="ch"><h3>📢 Pengumuman Terbaru</h3><button class="btn bg sm" onclick="goPage('pengumuman')">Lihat Semua</button></div><div class="cb" id="dAnn"></div></div>
+      </div>
+    </div>
+
+    <!-- WARGA -->
+    <div class="page" id="pg-warga">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <p style="color:var(--mu);font-size:14px">Kelola data seluruh warga RT</p>
+        <button class="btn bp" onclick="openMW()">+ Tambah Warga</button>
+      </div>
+      <div class="card">
+        <div class="ch"><h3>Daftar Warga</h3><input type="text" placeholder="🔍 Cari warga..." style="padding:8px 12px;background:var(--sur2);border:1px solid var(--bor);border-radius:8px;color:var(--tx);font-size:13px;outline:none;width:180px;" oninput="filterWarga(this.value)"></div>
+        <div class="tw"><table><thead><tr><th>No</th><th>Nama</th><th>NIK</th><th>Telepon</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbWarga"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- SURAT -->
+    <div class="page" id="pg-surat">
+      <div style="margin-bottom:18px"><p style="color:var(--mu);font-size:14px">Kelola pengajuan surat dari warga</p></div>
+      <div class="card">
+        <div class="ch"><h3>Data Surat</h3><select onchange="filterSurat(this.value)" style="padding:8px 12px;background:var(--sur2);border:1px solid var(--bor);border-radius:8px;color:var(--tx);font-size:13px;outline:none;"><option value="all">Semua</option><option value="pending">Pending</option><option value="approved">Disetujui</option><option value="rejected">Ditolak</option></select></div>
+        <div class="tw"><table><thead><tr><th>No</th><th>Nama Warga</th><th>Jenis Surat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbSurat"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- KAS -->
+    <div class="page" id="pg-kas">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <p style="color:var(--mu);font-size:14px">Catat pemasukan dan pengeluaran kas RT</p>
+        <button class="btn bp" onclick="openModal('moKas')">+ Tambah Kas</button>
+      </div>
+      <div class="ksm">
+        <div class="ki km"><div class="kl">Pemasukan</div><div class="kv" id="kMasuk">Rp 0</div></div>
+        <div class="ki kk"><div class="kl">Pengeluaran</div><div class="kv" id="kKeluar">Rp 0</div></div>
+        <div class="ki ks"><div class="kl">Saldo</div><div class="kv" id="kSaldo">Rp 0</div></div>
+      </div>
+      <div class="card"><div class="ch"><h3>Riwayat Transaksi</h3></div><div class="tw"><table><thead><tr><th>No</th><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="tbKas"></tbody></table></div></div>
+    </div>
+
+    <!-- PENGUMUMAN -->
+    <div class="page" id="pg-pengumuman">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <p style="color:var(--mu);font-size:14px">Kelola pengumuman untuk warga</p>
+        <button class="btn bp" onclick="openModal('moPeng')">+ Tambah Pengumuman</button>
+      </div>
+      <div class="al" id="listAnn"></div>
+    </div>
+
+    <!-- PENDAFTARAN -->
+    <div class="page" id="pg-pendaftaran">
+      <div style="margin-bottom:18px"><p style="color:var(--mu);font-size:14px">Verifikasi pendaftaran mandiri warga baru</p></div>
+      <div id="listReg"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODALS -->
+<div class="mo" id="moWarga">
+  <div class="mbox">
+    <div class="mh"><h3 id="mwTitle">Tambah Warga</h3><button class="mc" onclick="closeModal('moWarga')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="wFbKey">
+      <div class="fr"><div class="fg"><label>Nama Lengkap</label><input type="text" id="wNama" placeholder="Nama warga"></div><div class="fg"><label>NIK (16 digit)</label><input type="text" id="wNik" placeholder="NIK" maxlength="16"></div></div>
+      <div class="fg"><label>Alamat</label><input type="text" id="wAlamat" placeholder="Alamat lengkap"></div>
+      <div class="fr"><div class="fg"><label>Telepon</label><input type="text" id="wTel" placeholder="No. HP"></div><div class="fg"><label>Status Hunian</label><select id="wStatus"><option value="Tetap">Tetap</option><option value="Kontrak">Kontrak</option><option value="Kost">Kost</option></select></div></div>
+      <div class="fr"><div class="fg"><label>Username Login</label><input type="text" id="wUser" placeholder="Username"></div><div class="fg"><label>Password Login</label><div class="pw-wrap"><input type="password" id="wPass" placeholder="Password (kosongkan jika tidak ganti)"><button type="button" class="pw-toggle" onclick="togglePw(this,'wPass')" aria-label="Toggle password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div></div>
+    </div>
+    <div class="mf"><button class="btn bg" onclick="closeModal('moWarga')">Batal</button><button class="btn bp" onclick="saveWarga()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<div class="mo" id="moKas">
+  <div class="mbox">
+    <div class="mh"><h3>Tambah Data Kas</h3><button class="mc" onclick="closeModal('moKas')">✕</button></div>
+    <div class="mb">
+      <div class="fr"><div class="fg"><label>Tanggal</label><input type="date" id="kTgl"></div><div class="fg"><label>Jenis</label><select id="kJenis"><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></div></div>
+      <div class="fg"><label>Jumlah (Rp)</label><input type="number" id="kJumlah" placeholder="0"></div>
+      <div class="fg"><label>Keterangan</label><textarea id="kKet" placeholder="Keterangan transaksi..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn bg" onclick="closeModal('moKas')">Batal</button><button class="btn bp" onclick="saveKas()">💾 Simpan</button></div>
+  </div>
+</div>
+
+<div class="mo" id="moPeng">
+  <div class="mbox">
+    <div class="mh"><h3>Tambah Pengumuman</h3><button class="mc" onclick="closeModal('moPeng')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Judul</label><input type="text" id="pJudul" placeholder="Judul pengumuman"></div>
+      <div class="fg"><label>Tanggal</label><input type="date" id="pTgl"></div>
+      <div class="fg"><label>Isi Pengumuman</label><textarea id="pIsi" placeholder="Tulis pengumuman..." style="min-height:120px;"></textarea></div>
+    </div>
+    <div class="mf"><button class="btn bg" onclick="closeModal('moPeng')">Batal</button><button class="btn bp" onclick="savePeng()">📢 Publikasikan</button></div>
+  </div>
+</div>
+
+<div class="mo" id="moSurat">
+  <div class="mbox" style="max-width:600px">
+    <div class="mh"><h3>Detail Surat</h3><button class="mc" onclick="closeModal('moSurat')">✕</button></div>
+    <div class="mb" id="suratDetail"></div>
+    <div class="mf" id="suratActs"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK (versi 10.x - stabil) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
