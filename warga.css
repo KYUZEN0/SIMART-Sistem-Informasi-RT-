@@ -156,6 +156,49 @@
   ::-webkit-scrollbar-track{background:var(--bg);}
   ::-webkit-scrollbar-thumb{background:var(--bor);border-radius:3px;}
 
+
+  /* === Tombol Keluar Mobile === */
+
+  /* Bottom nav keluar button */
+  .bnb-out{color:rgba(233,69,96,.7)!important;}
+  .bnb-out .bi{transition:transform .3s ease;}
+  .bnb-out:hover .bi, .bnb-out:active .bi{transform:translateX(4px) scale(1.15)!important;}
+  @keyframes doorShake{0%{transform:rotate(0)}20%{transform:rotate(-8deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:rotate(0)}}
+  .bnb-out:active .bi{animation:doorShake .4s ease forwards;}
+
+  /* Tombol keluar di halaman Profil */
+  .btn-logout-mobile{
+    display:none;
+    width:100%;
+    margin:16px 0 20px;
+    padding:14px 20px;
+    background:linear-gradient(135deg,rgba(233,69,96,.12),rgba(192,57,43,.08));
+    border:1.5px solid rgba(233,69,96,.35);
+    border-radius:14px;
+    color:#e94560;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .3s ease;
+    text-align:center;
+    letter-spacing:.01em;
+    position:relative;
+    overflow:hidden;
+  }
+  .btn-logout-mobile::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(233,69,96,.15),transparent);
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .btn-logout-mobile:hover::before, .btn-logout-mobile:active::before{opacity:1;}
+  .btn-logout-mobile:active{transform:scale(.97);}
+  .btn-logout-mobile span{font-size:18px;margin-right:4px;display:inline-block;transition:transform .3s;}
+  .btn-logout-mobile:hover span, .btn-logout-mobile:active span{transform:translateX(3px) rotate(-5deg);}
+
   @media(max-width:768px){
     .nlinks{display:none;}
     .botnav{display:block;}
@@ -166,6 +209,7 @@
     .main{padding:16px;}
     .topnav{padding:0 16px;height:56px;}
     .lbtn{display:none;}
+    .btn-logout-mobile{display:block;}
     .fr2{grid-template-columns:1fr;}
     .ph{flex-direction:column;}
     .banner{padding:22px 20px;}
